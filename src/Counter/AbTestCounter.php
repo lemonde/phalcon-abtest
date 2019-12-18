@@ -3,15 +3,13 @@
 namespace ABTesting\Counter;
 
 use ABTesting\Engine;
-use Phalcon\Cache\Backend\Redis;
-use Phalcon\Config;
+use ABTesting\Traits\ScanableRedis;
 use Phalcon\Di\Injectable;
 
 /**
  * Class AbTestCounter
  *
- * @property Config $config
- * @property Redis $cache
+ * @property ScanableRedis $cache
  */
 class AbTestCounter extends Injectable
 {

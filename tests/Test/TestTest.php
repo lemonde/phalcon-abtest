@@ -31,6 +31,26 @@ class TestTest extends TestCase
         $this->assertCount(2, $test->getVariants());
     }
 
+    public function testGetVariant()
+    {
+        $variantA = new Variant('A', 'A', false);
+        $variantB = new Variant('B', 'B', true);
+        $variantC = new Variant('C', 'C', false);
+
+        $test = new Test('phpunit', [$variantA, $variantB, $variantC]);
+        $this->assertSame($variantB, $test->getVariant('B'));
+    }
+
+    public function testGetUndefinedVariant()
+    {
+        $variantA = new Variant('A', 'A', false);
+        $variantB = new Variant('B', 'B', true);
+        $variantC = new Variant('C', 'C', false);
+
+        $test = new Test('phpunit', [$variantA, $variantB, $variantC]);
+        $this->assertNull($test->getVariant('D'));
+    }
+
     public function testBattle()
     {
         $engine = $this->createMockForSingleton(Engine::class);
@@ -53,7 +73,6 @@ class TestTest extends TestCase
         $test->battle();
         $this->assertTrue($test->hasBattled());
         $this->assertEquals($variantA, $test->getWinner());
-        $this->assertFalse($test->isDefault());
     }
 
     public function testBattleDeactivated()
@@ -77,5 +96,17 @@ class TestTest extends TestCase
         $test->battle();
         $this->assertTrue($test->hasBattled());
         $this->assertEquals($variantC, $test->getWinner());
+    }
+
+    public function testSetWinner()
+    {
+        $variantA = new Variant('A', 'A', false);
+        $variantB = new Variant('B', 'B', true);
+        $variantC = new Variant('C', 'C', false);
+
+        $test = new Test('phpunit', [$variantA, $variantB, $variantC]);
+        $test->setWinner($variantC);
+        $this->assertTrue($test->hasBattled());
+        $this->assertSame($variantC, $test->getWinner());
     }
 }

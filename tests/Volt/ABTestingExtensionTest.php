@@ -37,6 +37,7 @@ class ABTestingExtensionTest extends TestCase
     public function testGetTestResult()
     {
         $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
         $engine
             ->expects($this->once())
             ->method('getTest')
@@ -47,9 +48,24 @@ class ABTestingExtensionTest extends TestCase
     }
 
 
+    public function testGetDeactivatedTestResult()
+    {
+        $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(false);
+        $engine
+            ->expects($this->never())
+            ->method('getTest')
+            ->with('testName')
+            ->willReturn(new Test('testName', [], new Variant('default', 'Default')));
+
+        $this->assertEquals(null, ABTestingExtension::getTestResult('testName'));
+    }
+
+
     public function testGetUndefinedTestResult()
     {
         $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
         $engine
             ->expects($this->once())
             ->method('getTest')
@@ -83,10 +99,10 @@ class ABTestingExtensionTest extends TestCase
         $winner->expects($this->any())->method('getIdentifier')->willReturn('default');
         $test->expects($this->any())->method('getIdentifier')->willReturn('testName');
         $test->expects($this->any())->method('getWinner')->willReturn($winner);
-        $test->expects($this->any())->method('isDefault')->willReturn(false);
         $test->expects($this->any())->method('hasBattled')->willReturn(true);
 
         $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
 
         $engine
             ->expects($this->once())
@@ -99,6 +115,93 @@ class ABTestingExtensionTest extends TestCase
             ->with('testName', 'default');
 
         $this->assertEquals('/the/ab_test_redirect/url', ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
+    }
+
+    public function testGetForcedTestClick()
+    {
+        $url = $this->createMock(Url::class);
+        $url
+            ->expects($this->once())
+            ->method('get')
+            ->with(
+                ['for' => 'ab_test_redirect', 'testName' => 'testName', 'winner' => 'forced'],
+                ['u' => 'https://www.example.org']
+            )
+            ->willReturn('/the/ab_test_redirect/url_forced');
+
+        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di
+            ->expects($this->once())
+            ->method('get')
+            ->with('url')
+            ->willReturn($url);
+
+        $test = $this->createMock(Test::class);
+        $winner = $this->createMock(Variant::class);
+        $winner->expects($this->any())->method('getIdentifier')->willReturn('default');
+        $forced = $this->createMock(Variant::class);
+        $forced->expects($this->any())->method('getIdentifier')->willReturn('forced');
+        $test->expects($this->any())->method('getIdentifier')->willReturn('testName');
+        $test->expects($this->once())->method('getVariant')->with('forced')->willReturn($forced);
+        $test->expects($this->any())->method('getWinner')->willReturn($winner);
+        $test->expects($this->any())->method('hasBattled')->willReturn(true);
+
+        $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
+
+        $engine
+            ->expects($this->once())
+            ->method('getTest')
+            ->with('testName')
+            ->willReturn($test);
+        $engine
+            ->expects($this->once())
+            ->method('savePrint')
+            ->with('testName', 'forced');
+
+        $this->assertEquals('/the/ab_test_redirect/url_forced', ABTestingExtension::getTestClick('testName', 'https://www.example.org', 'forced'));
+    }
+
+    public function testGetDeactivatedTestClick()
+    {
+        $url = $this->createMock(Url::class);
+        $url
+            ->expects($this->never())
+            ->method('get')
+            ->with(
+                ['for' => 'ab_test_redirect', 'testName' => 'testName', 'winner' => 'default'],
+                ['u' => 'https://www.example.org']
+            )
+            ->willReturn('/the/ab_test_redirect/url');
+
+        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di
+            ->expects($this->never())
+            ->method('get')
+            ->with('url')
+            ->willReturn($url);
+
+        $test = $this->createMock(Test::class);
+        $winner = $this->createMock(Variant::class);
+        $winner->expects($this->any())->method('getIdentifier')->willReturn('default');
+        $test->expects($this->any())->method('getIdentifier')->willReturn('testName');
+        $test->expects($this->any())->method('getWinner')->willReturn($winner);
+        $test->expects($this->any())->method('hasBattled')->willReturn(true);
+
+        $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(false);
+
+        $engine
+            ->expects($this->never())
+            ->method('getTest')
+            ->with('testName')
+            ->willReturn($test);
+        $engine
+            ->expects($this->never())
+            ->method('savePrint')
+            ->with('testName', 'default');
+
+        $this->assertEquals('https://www.example.org', ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
     }
 
     public function testGetTestDefaultClick()
@@ -123,12 +226,13 @@ class ABTestingExtensionTest extends TestCase
         $test = $this->createMock(Test::class);
         $winner = $this->createMock(Variant::class);
         $winner->expects($this->any())->method('getIdentifier')->willReturn('default');
+        $winner->expects($this->any())->method('isDefault')->willReturn(true);
         $test->expects($this->any())->method('getIdentifier')->willReturn('testName');
         $test->expects($this->any())->method('getWinner')->willReturn($winner);
-        $test->expects($this->any())->method('isDefault')->willReturn(true);
         $test->expects($this->any())->method('hasBattled')->willReturn(true);
 
         $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
         $engine
             ->expects($this->once())
             ->method('getTest')
@@ -155,6 +259,7 @@ class ABTestingExtensionTest extends TestCase
             ->method('get');
 
         $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
         $engine
             ->expects($this->once())
             ->method('getTest')
@@ -164,6 +269,6 @@ class ABTestingExtensionTest extends TestCase
             ->expects($this->never())
             ->method('savePrint');
 
-        $this->assertEquals(null, ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
+        $this->assertEquals('https://www.example.org', ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
     }
 }

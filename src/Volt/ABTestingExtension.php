@@ -24,6 +24,11 @@ class ABTestingExtension
     {
         try {
             $engine  = Engine::getInstance();
+
+            if (!$engine->isActivated()) {
+                return null;
+            }
+
             $test = $engine->getTest($testName);
             return $test->getWinner()->getValue();
         } catch (\Throwable $t) {
@@ -31,29 +36,43 @@ class ABTestingExtension
         }
     }
 
-    public static function getTestClick(string $testName, string $target): ?string
+    public static function getTestClick(string $testName, string $target, $winnerName = null): ?string
     {
         try {
             $engine  = Engine::getInstance();
+
+            if (!$engine->isActivated()) {
+                return $target;
+            }
+
             $test = $engine->getTest($testName);
+            $winner = null;
+
+            if ($winnerName) {
+                $winner = $test->getVariant($winnerName);
+            }
+
+            if (empty($winner)) {
+                $winner = $test->getWinner();
+            }
 
             $path = Di::getDefault()->get('url')->get([
                 'for' => 'ab_test_redirect',
                 'testName' => $test->getIdentifier(),
-                'winner' => $test->getWinner()->getIdentifier(),
+                'winner' => $winner->getIdentifier(),
             ], [
                 'u' => $target
             ]);
 
-            if (!$test->hasBattled() || $test->isDefault()) {
+            if (!$winnerName && (!$test->hasBattled() || $winner->isDefault())) {
                 $path = $target;
             }
 
-            $engine->savePrint($test->getIdentifier(), $test->getWinner()->getIdentifier());
+            $engine->savePrint($test->getIdentifier(), $winner->getIdentifier());
 
             return $path;
         } catch (\Throwable $t) {
-            return null;
+            return $target;
         }
     }
 }

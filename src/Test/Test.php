@@ -42,11 +42,6 @@ class Test
     private $hasBattled = false;
 
     /**
-     * @var bool
-     */
-    private $isDefault = null;
-
-    /**
      * Test constructor.
      * @param string $identifier
      * @param Variant[] $variants
@@ -95,6 +90,20 @@ class Test
     public function getVariants(): array
     {
         return $this->variants;
+    }
+
+    /**
+     * @return null|Variant
+     */
+    public function getVariant($identifier): ?Variant
+    {
+        foreach ($this->variants as $variant) {
+            if ($variant->getIdentifier() === $identifier) {
+                return $variant;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -149,10 +158,8 @@ class Test
 
         if (Engine::getInstance()->isActivated()) {
             $this->winner = $this->getChooser()->choose($this);
-            $this->setIsDefault(null === $this->isDefault ? false : $this->isDefault);
         } else {
             $this->winner = $this->getDefaultVariant();
-            $this->isDefault = true;
         }
 
         $this->hasBattled = true;
@@ -171,28 +178,22 @@ class Test
     }
 
     /**
+     * @param Variant|null $variant
+     * @return Test
+     */
+    public function setWinner(?Variant $variant): Test
+    {
+        $this->winner = $variant;
+        $this->hasBattled = true;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function hasBattled()
     {
         return $this->hasBattled;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDefault(): bool
-    {
-        return $this->isDefault;
-    }
-
-    /**
-     * @param bool $isDefault
-     * @return Test
-     */
-    public function setIsDefault(bool $isDefault): Test
-    {
-        $this->isDefault = $isDefault;
-        return $this;
     }
 }

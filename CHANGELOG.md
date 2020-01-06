@@ -1,13 +1,13 @@
 # CHANGELOG
 
-## 1.0.1 1.0.0 
+## 1.0.2 1.0.1 
 
 
-### Chore
+### Bug Fixes
 
-  - **test**
-    - allow forced winner to tests
-  ([af24837e](https://github.com/lemonde/phalcon-abtest/commit/af24837e586d208bb595a67f915a21e636416c9a))
+  - **volt**
+    - result is null only on errors
+  ([4bff75f1](https://github.com/lemonde/phalcon-abtest/commit/4bff75f131d8723ee2978e191a14c40b1e3848ff))
 
 
 

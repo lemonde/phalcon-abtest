@@ -24,12 +24,11 @@ class ABTestingExtension
     {
         try {
             $engine  = Engine::getInstance();
+            $test = $engine->getTest($testName);
 
             if (!$engine->isActivated()) {
-                return null;
+                return $test->getDefaultVariant()->getValue();
             }
-
-            $test = $engine->getTest($testName);
             return $test->getWinner()->getValue();
         } catch (\Throwable $t) {
             return null;

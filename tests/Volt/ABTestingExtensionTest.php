@@ -8,6 +8,7 @@ use ABTesting\Test\Variant;
 use ABTesting\Tests\TestCase;
 use ABTesting\Volt\ABTestingExtension;
 use Phalcon\Di;
+use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Mvc\Url;
 
 class ABTestingExtensionTest extends TestCase
@@ -57,19 +58,21 @@ class ABTestingExtensionTest extends TestCase
         $engine = $this->createMockForSingleton(Engine::class);
         $engine->expects($this->once())->method('isActivated')->willReturn(false);
         $engine
-            ->expects($this->never())
+            ->expects($this->once())
             ->method('getTest')
             ->with('testName')
             ->willReturn(new Test('testName', [], new Variant('default', 'Default')));
 
-        $this->assertEquals(null, ABTestingExtension::getTestResult('testName'));
+        $this->assertEquals('Default', ABTestingExtension::getTestResult('testName'));
     }
 
 
     public function testGetUndefinedTestResult()
     {
         $engine = $this->createMockForSingleton(Engine::class);
-        $engine->expects($this->once())->method('isActivated')->willReturn(true);
+        $eventsManager = $this->createMock(EventsManager::class);
+        $engine->expects($this->any())->method('getEventsManager')->willReturn($eventsManager);
+        $engine->expects($this->never())->method('isActivated');
         $engine
             ->expects($this->once())
             ->method('getTest')
@@ -263,6 +266,8 @@ class ABTestingExtensionTest extends TestCase
             ->method('get');
 
         $engine = $this->createMockForSingleton(Engine::class);
+        $eventsManager = $this->createMock(EventsManager::class);
+        $engine->expects($this->any())->method('getEventsManager')->willReturn($eventsManager);
         $engine->expects($this->once())->method('isActivated')->willReturn(true);
         $engine
             ->expects($this->once())

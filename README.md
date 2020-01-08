@@ -128,7 +128,23 @@ class Redis extends \Phalcon\Cache\Backend\Redis {
                     'home_test_B' => 'some other thing',
                 ],
                 'chooser' => [\ABTesting\Chooser\PercentChooser::class]
-            ]
+            ],
+            'home_link_url' => [
+                'default' => 'https://www.google.com',
+                'variants' => [
+                    'home_test_A' => 'https://www.google.fr',
+                    'home_test_B' => 'https://www.google.be',
+                ],
+                'chooser' => [\ABTesting\Chooser\PercentChooser::class]
+            ],
+            'home_partial' => [
+                'default' => 'path/to/default',
+                'variants' => [
+                    'home_test_A' => 'path/to/A',
+                    'home_test_B' => 'path/to/B',
+                ],
+                'chooser' => [\ABTesting\Chooser\PercentChooser::class]
+            ],
         ],
     
     ]);
@@ -138,11 +154,55 @@ class Redis extends \Phalcon\Cache\Backend\Redis {
     
 4. Déclarer les actions soumises aux tests A/B avec l'annotation `@AbTesting('home_text_content')`
 
-5. Utiliser les fonctions volt pour afficher les élements souhaités
-
-    ```twig
-    <a href="{{ ab_test_click('home_text_content', 'https://www.google.com') }}">{{ ab_test_result('home_text_content') }}</a>
-    ```
+5. Utiliser les fonctions volt pour afficher les élements souhaités, par exemple :
+   - pour tester un wording :
+   
+      ```twig
+      <a {{ ab_test_href('home_text_content', 'https://www.google.com') }}>
+          {{ ab_test_result('home_text_content') }}
+      </a>
+      ```
+   - pour tester un lien défini comme test :
+   
+      ```twig
+      <a {{ ab_test_href('home_link_url', ab_test_result('home_link_url')) }}>
+          Lien
+      </a>
+      ```
+   - pour tester 2 formats :
+   
+      ```twig
+      {# home.volt #}
+      
+      {{ partial('path/to/specific/partial/dir/' ~ ab_test_result('home_partial')) }}
+      ```
+   
+      ```twig
+      {# path/to/specific/partial/dir/path/to/A.volt #}
+      
+      <!-- your content -->
+      <a {{ ab_test_href('home_partial', 'https://example.org/link/for/A') }}>
+          Lien
+      </a>
+      ```
+   
+      ```twig
+      {# path/to/specific/partial/dir/path/to/B.volt #}
+      
+      <!-- your content -->
+      <a {{ ab_test_href('home_partial', 'https://example.org/link/for/B') }}>
+          Lien
+      </a>
+      ```
+   
+      ```twig
+      {# path/to/specific/partial/dir/path/to/default.volt #}
+      
+      <!-- your content -->
+      <a href="https://example.org">
+          Lien
+      </a>
+      ```
    
 ## Configuration des tests A/B
 

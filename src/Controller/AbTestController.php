@@ -3,6 +3,7 @@
 namespace ABTesting\Controller;
 
 use ABTesting\Engine;
+use ABTesting\Exception\AbTestingException;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\Controller;
@@ -15,8 +16,15 @@ class AbTestController extends Controller
     {
         $url = $this->request->getQuery('u');
 
-        if ($url === null) {
-            throw new Exception('Missing target URL in query', Dispatcher::EXCEPTION_ACTION_NOT_FOUND);
+        if (empty($url)) {
+            $this->response->resetHeaders();
+            $this->response->setStatusCode(404);
+            return;
+        }
+
+        if (empty($this->request->getHTTPReferer())) {
+            $this->response->redirect($url, true, 302);
+            return;
         }
 
         $testName = $this->dispatcher->getParam('testName');
@@ -25,20 +33,19 @@ class AbTestController extends Controller
 
         try {
             $test = $engine->getTest($testName);
-            $winner = null;
-
-            foreach ($test->getVariants() as $variant) {
-                if ($variant->getIdentifier() === $testWinner) {
-                    $winner = $variant;
-                    break;
-                }
-            }
+            $winner = $test->getVariant($testWinner);
 
             if ($winner) {
                 $engine->saveClick($testName, $testWinner);
             }
-        } catch (\Phalcon\Exception $e) {
-        } finally {
+
+            $this->response->redirect($url, true, 302);
+        } catch (\Throwable $t) {
+            if ($engine->getEventsManager()) {
+                $e = new AbTestingException("Unable to count click for $testName:$testWinner.", 404, $t);
+                $engine->getEventsManager()->fire('abtest:beforeException', Engine::getInstance(), $e);
+            }
+
             $this->response->redirect($url, true, 302);
         }
     }

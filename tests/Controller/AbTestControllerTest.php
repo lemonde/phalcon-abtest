@@ -7,6 +7,8 @@ use ABTesting\Engine;
 use ABTesting\Exception\AbTestingException;
 use ABTesting\Test\Test;
 use ABTesting\Test\Variant;
+use Phalcon\Events\Manager as EventsManager;
+use Phalcon\Exception;
 use Phalcon\Http\Request;
 use ABTesting\Tests\TestCase;
 use Phalcon\Http\Response;
@@ -34,6 +36,10 @@ class AbTestControllerTest extends TestCase
             ->expects($this->once())
             ->method('getQuery')
             ->with('u')
+            ->willReturn('https://www.example.org');
+        $controller->request
+            ->expects($this->once())
+            ->method('getHTTPReferer')
             ->willReturn('https://www.example.org');
 
         /** @var Engine|MockObject $engine */
@@ -74,11 +80,54 @@ class AbTestControllerTest extends TestCase
             ->method('getQuery')
             ->with('u')
             ->willReturn('https://www.example.org');
+        $controller->request
+            ->expects($this->once())
+            ->method('getHTTPReferer')
+            ->willReturn('https://www.example.org');
 
         /** @var Engine|MockObject $engine */
         $engine = $this->createMockForSingleton(Engine::class);
         $engine
             ->expects($this->once())
+            ->method('getTest')
+            ->with('invalid')
+            ->willThrowException(new AbTestingException());
+
+        $engine
+            ->expects($this->never())
+            ->method('saveClick');
+
+        $controller->countAction();
+    }
+
+    public function testCountActionNoReferer()
+    {
+        $controller = new AbTestController();
+
+        $controller->response = $this->createMock(Response::class);
+        $controller->response->expects($this->once())->method('redirect');
+
+        $controller->dispatcher = $this->createMock(Dispatcher::class);
+        $controller->dispatcher
+            ->expects($this->never())
+            ->method('getParam')
+            ->withConsecutive(['testName'], ['winner'])
+            ->willReturnOnConsecutiveCalls('invalid', 'winner');
+        $controller->request = $this->createMock(Request::class);
+        $controller->request
+            ->expects($this->once())
+            ->method('getQuery')
+            ->with('u')
+            ->willReturn('https://www.example.org');
+        $controller->request
+            ->expects($this->once())
+            ->method('getHTTPReferer')
+            ->willReturn(null);
+
+        /** @var Engine|MockObject $engine */
+        $engine = $this->createMockForSingleton(Engine::class);
+        $engine
+            ->expects($this->never())
             ->method('getTest')
             ->with('invalid')
             ->willThrowException(new AbTestingException());
@@ -109,9 +158,15 @@ class AbTestControllerTest extends TestCase
             ->method('getQuery')
             ->with('u')
             ->willReturn('https://www.example.org');
+        $controller->request
+            ->expects($this->once())
+            ->method('getHTTPReferer')
+            ->willReturn('https://www.example.org');
 
         /** @var Engine|MockObject $engine */
         $engine = $this->createMockForSingleton(Engine::class);
+        $eventsManager = $this->createMock(EventsManager::class);
+        $engine->expects($this->any())->method('getEventsManager')->willReturn($eventsManager);
         $engine
             ->expects($this->once())
             ->method('getTest')
@@ -128,13 +183,55 @@ class AbTestControllerTest extends TestCase
         $controller->countAction();
     }
 
-    /**
-     * @expectedException \Phalcon\Mvc\Dispatcher\Exception
-     * @expectedExceptionMessage Missing target URL in query
-     */
+    public function testCountErroredVariantAction()
+    {
+        $controller = new AbTestController();
+
+        $controller->response = $this->createMock(Response::class);
+        $controller->response->expects($this->once())->method('redirect');
+
+        $controller->dispatcher = $this->createMock(Dispatcher::class);
+        $controller->dispatcher
+            ->expects($this->exactly(2))
+            ->method('getParam')
+            ->withConsecutive(['testName'], ['winner'])
+            ->willReturnOnConsecutiveCalls('test', 'invalid');
+        $controller->request = $this->createMock(Request::class);
+        $controller->request
+            ->expects($this->once())
+            ->method('getQuery')
+            ->with('u')
+            ->willReturn('https://www.example.org');
+        $controller->request
+            ->expects($this->once())
+            ->method('getHTTPReferer')
+            ->willReturn('https://www.example.org');
+
+        /** @var Engine|MockObject $engine */
+        $engine = $this->createMockForSingleton(Engine::class);
+        $eventsManager = $this->createMock(EventsManager::class);
+        $engine->expects($this->any())->method('getEventsManager')->willReturn($eventsManager);
+        $engine
+            ->expects($this->once())
+            ->method('getTest')
+            ->with('test')
+            ->willThrowException(new Exception('Sample exception'));
+
+        $engine
+            ->expects($this->never())
+            ->method('saveClick');
+
+        $controller->countAction();
+    }
+
     public function testNoRedirectAction()
     {
         $controller = new AbTestController();
+
+        $controller->response = $this->createMock(Response::class);
+        $controller->response->expects($this->once())->method('resetHeaders');
+        $controller->response->expects($this->once())->method('setStatusCode')->with(404);
+
         $controller->request = $this->createMock(Request::class);
         $controller->request
             ->expects($this->once())

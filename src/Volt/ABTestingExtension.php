@@ -3,6 +3,7 @@
 namespace ABTesting\Volt;
 
 use ABTesting\Engine;
+use ABTesting\Exception\AbTestingException;
 use Phalcon\Di;
 use Phalcon\Di\Injectable;
 
@@ -15,6 +16,8 @@ class ABTestingExtension
                 return self::class . '::getTestResult(' . $arguments . ')';
             case 'ab_test_click':
                 return self::class . '::getTestClick(' . $arguments . ')';
+            case 'ab_test_href':
+                return self::class . '::getTestHref(' . $arguments . ')';
         }
 
         return null;
@@ -73,5 +76,14 @@ class ABTestingExtension
         } catch (\Throwable $t) {
             return $target;
         }
+    }
+
+    public static function getTestHref(string $testName, string $target, $winnerName = null)
+    {
+        $counterLink = self::getTestClick($testName, $target, $winnerName);
+        $attributes = 'href="' . htmlspecialchars($target, ENT_QUOTES) . '" ';
+        $attributes .= ' onmousedown="' . htmlspecialchars("this.href = '$counterLink'") . '" ';
+
+        return $attributes;
     }
 }

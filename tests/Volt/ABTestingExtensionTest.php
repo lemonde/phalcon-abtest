@@ -28,6 +28,10 @@ class ABTestingExtensionTest extends TestCase
             ABTestingExtension::class . '::getTestClick(\'testName\', \'https://www.example.org\')',
             $ext->compileFunction('ab_test_click', $exportParams(['testName', 'https://www.example.org']))
         );
+        $this->assertEquals(
+            ABTestingExtension::class . '::getTestHref(\'testName\', \'https://www.example.org\')',
+            $ext->compileFunction('ab_test_href', $exportParams(['testName', 'https://www.example.org']))
+        );
         $this->assertNull(
             $ext->compileFunction('not_mapped_function', $exportParams(['testName', 'https://www.example.org']))
         );
@@ -270,5 +274,46 @@ class ABTestingExtensionTest extends TestCase
             ->method('savePrint');
 
         $this->assertEquals('https://www.example.org', ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
+    }
+
+    public function testGetTestHref()
+    {
+        $url = $this->createMock(Url::class);
+        $url
+            ->expects($this->once())
+            ->method('get')
+            ->with(
+                ['for' => 'ab_test_redirect', 'testName' => 'testName', 'winner' => 'default'],
+                ['u' => 'https://www.example.org']
+            )
+            ->willReturn('/the/ab_test_redirect/url');
+
+        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di
+            ->expects($this->once())
+            ->method('get')
+            ->with('url')
+            ->willReturn($url);
+
+        $test = $this->createMock(Test::class);
+        $winner = $this->createMock(Variant::class);
+        $winner->expects($this->any())->method('getIdentifier')->willReturn('default');
+        $test->expects($this->any())->method('getIdentifier')->willReturn('testName');
+        $test->expects($this->any())->method('getWinner')->willReturn($winner);
+        $test->expects($this->any())->method('hasBattled')->willReturn(true);
+
+        $engine = $this->createMockForSingleton(Engine::class);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
+
+        $engine
+            ->expects($this->once())
+            ->method('getTest')
+            ->with('testName')
+            ->willReturn($test);
+        $engine
+            ->expects($this->once())
+            ->method('savePrint')
+            ->with('testName', 'default');
+        $this->assertEquals('href="https://www.example.org"  onmousedown="this.href = \'/the/ab_test_redirect/url\'" ', ABTestingExtension::getTestHref('testName', 'https://www.example.org'));
     }
 }

@@ -91,7 +91,7 @@ class AbTestControllerTest extends TestCase
             ->expects($this->once())
             ->method('getTest')
             ->with('invalid')
-            ->willThrowException(new AbTestingException());
+            ->willReturn(null);
 
         $engine
             ->expects($this->never())

@@ -30,9 +30,14 @@ class ABTestingExtension
         try {
             $test = $engine->getTest($testName);
 
+            if (empty($test)) {
+                return null;
+            }
+
             if (!$engine->isActivated()) {
                 return $test->getDefaultVariant()->getValue();
             }
+
             return $test->getWinner()->getValue();
         } catch (\Throwable $t) {
             if (null !== $engine->getEventsManager()) {
@@ -55,6 +60,11 @@ class ABTestingExtension
             }
 
             $test = $engine->getTest($testName);
+
+            if (empty($test)) {
+                return $target;
+            }
+
             $winner = null;
 
             if ($winnerName) {

@@ -122,14 +122,19 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
 
     /**
      * @param string $identifier
-     * @return Test
-     * @throws AbTestingException
+     * @return null|Test
      */
     public function getTest(string $identifier)
     {
         if (empty($this->tests[$identifier])) {
-            throw new AbTestingException('Unconfigured AB test with name ' . $identifier, AbTestingException::UNDEFINED_TEST_CODE);
+            if (null !== $this->getEventsManager()) {
+                $e = new AbTestingException('Unconfigured AB test with name ' . $identifier, AbTestingException::UNDEFINED_TEST_CODE);
+                $this->getEventsManager()->fire('abtest:beforeException', $this, $e);
+            }
+
+            return null;
         }
+
         return $this->tests[$identifier];
     }
     /**

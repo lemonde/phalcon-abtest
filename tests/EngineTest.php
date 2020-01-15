@@ -68,17 +68,15 @@ class EngineTest extends TestCase
         return $engine;
     }
 
-    /**
-     * @throws Exception
-     * @expectedException \ABTesting\Exception\AbTestingException
-     * @expectedExceptionMessage  Unconfigured AB test with name phpunit_ab_test
-     */
     public function testGetEmptyInstance() {
         $di = $this->getDi([]);
+        $eventManager = $this->createMock(EventsManager::class);
         $engine = Engine::getInstance($di);
+        $engine->setEventsManager($eventManager);
+
         $this->assertCount(0, $engine->getTests());
         $this->assertContainsOnlyInstancesOf(Test::class, $engine->getTests());
-        $engine->getTest('phpunit_ab_test');
+        $this->assertNull($engine->getTest('phpunit_ab_test'));
     }
 
     public function testActivated(){

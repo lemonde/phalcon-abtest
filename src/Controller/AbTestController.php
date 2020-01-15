@@ -33,6 +33,12 @@ class AbTestController extends Controller
 
         try {
             $test = $engine->getTest($testName);
+
+            if (empty($test)) {
+                $this->response->redirect($url, true, 302);
+                return;
+            }
+
             $winner = $test->getVariant($testWinner);
 
             if ($winner) {

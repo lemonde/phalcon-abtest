@@ -52,7 +52,6 @@ class ABTestingExtensionTest extends TestCase
         $this->assertEquals('Default', ABTestingExtension::getTestResult('testName'));
     }
 
-
     public function testGetDeactivatedTestResult()
     {
         $engine = $this->createMockForSingleton(Engine::class);
@@ -78,6 +77,21 @@ class ABTestingExtensionTest extends TestCase
             ->method('getTest')
             ->with('testName')
             ->willThrowException(new \Exception('Any exception thrown'));
+
+        $this->assertEquals(null, ABTestingExtension::getTestResult('testName'));
+    }
+
+    public function testGetNotFoundTestResult()
+    {
+        $engine = $this->createMockForSingleton(Engine::class);
+        $eventsManager = $this->createMock(EventsManager::class);
+        $engine->expects($this->any())->method('getEventsManager')->willReturn($eventsManager);
+        $engine->expects($this->never())->method('isActivated');
+        $engine
+            ->expects($this->once())
+            ->method('getTest')
+            ->with('testName')
+            ->willReturn(null);
 
         $this->assertEquals(null, ABTestingExtension::getTestResult('testName'));
     }
@@ -273,7 +287,35 @@ class ABTestingExtensionTest extends TestCase
             ->expects($this->once())
             ->method('getTest')
             ->with('testName')
-            ->willThrowException(new \Exception('Any exception thrown'));
+            ->willReturn(new \Exception('Any exception thrown'));
+        $engine
+            ->expects($this->never())
+            ->method('savePrint');
+
+        $this->assertEquals('https://www.example.org', ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
+    }
+
+    public function testGetNotFoundTestClick()
+    {
+        $url = $this->createMock(Url::class);
+        $url
+            ->expects($this->never())
+            ->method('get');
+
+        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di
+            ->expects($this->never())
+            ->method('get');
+
+        $engine = $this->createMockForSingleton(Engine::class);
+        $eventsManager = $this->createMock(EventsManager::class);
+        $engine->expects($this->any())->method('getEventsManager')->willReturn($eventsManager);
+        $engine->expects($this->once())->method('isActivated')->willReturn(true);
+        $engine
+            ->expects($this->once())
+            ->method('getTest')
+            ->with('testName')
+            ->willReturn(null);
         $engine
             ->expects($this->never())
             ->method('savePrint');

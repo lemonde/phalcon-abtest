@@ -28,4 +28,9 @@ class PercentChooser implements ChooserInterface
 
         return  $test->getVariants()[0] ?? null;
     }
+
+    public function isCountable(Test $test, string $action): bool
+    {
+        return true;
+    }
 }

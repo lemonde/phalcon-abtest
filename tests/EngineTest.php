@@ -2,10 +2,13 @@
 
 namespace ABTesting\Tests;
 
+use ABTesting\Chooser\ChooserInterface;
 use ABTesting\Chooser\PercentChooser;
 use ABTesting\Counter\AbTestCounter;
 use ABTesting\Engine;
+use ABTesting\Exception\AbTestingException;
 use ABTesting\Test\Test;
+use ABTesting\Test\Variant;
 use Phalcon\Config;
 use Phalcon\DiInterface;
 use Phalcon\Events\Manager as EventsManager;
@@ -91,17 +94,13 @@ class EngineTest extends TestCase
         $this->assertTrue($engine->isActivated());
     }
 
-    public function testSavePrint(){
+    public function testSavePrintNoTest() {
         list($engine, $counter) = $this->getEngine([]);
 
         $eventsManager = $this->createMock(EventsManager::class);
-        $eventsManager
-            ->expects($this->once())
-            ->method('fire')
-            ->with('abtest:beforePrint', $this->isInstanceOf(Engine::class), ['sample_test', 'sample_template']);
 
         $counter
-            ->expects($this->once())
+            ->expects($this->never())
             ->method('saveCounter')
             ->with('print', 'desktop', 'sample_test', 'sample_template');
 
@@ -109,22 +108,64 @@ class EngineTest extends TestCase
         $engine->savePrint('sample_test', 'sample_template');
     }
 
-    public function testSaveClick(){
-        list($engine, $counter) = $this->getEngine([]);
+    public function testSavePrint() {
+        list($engine, $counter) = $this->getEngine([
+            'phpunit_ab_test' => [
+                'variants' => [
+                    'test_A' => 'test A',
+                    'test_B' => 'test B',
+                ],
+                'chooser' => [PercentChooser::class],
+                'default' => 'test_A'
+            ],
+        ]);
 
         $eventsManager = $this->createMock(EventsManager::class);
-        $eventsManager
-            ->expects($this->once())
-            ->method('fire')
-            ->with('abtest:beforeClick', $this->isInstanceOf(Engine::class), ['sample_test', 'sample_template']);
 
         $counter
             ->expects($this->once())
+            ->method('saveCounter')
+            ->with('print', 'desktop', 'phpunit_ab_test', 'test_A');
+
+        $engine->setEventsManager($eventsManager);
+        $engine->savePrint('phpunit_ab_test', 'test_A');
+    }
+
+    public function testSaveClickNoTest() {
+        list($engine, $counter) = $this->getEngine([]);
+
+        $eventsManager = $this->createMock(EventsManager::class);
+
+        $counter
+            ->expects($this->never())
             ->method('saveCounter')
             ->with('click', 'desktop', 'sample_test', 'sample_template');
 
         $engine->setEventsManager($eventsManager);
         $engine->saveClick('sample_test', 'sample_template');
+    }
+
+    public function testSaveClick() {
+        list($engine, $counter) = $this->getEngine([
+            'phpunit_ab_test' => [
+                'variants' => [
+                    'test_A' => 'test A',
+                    'test_B' => 'test B',
+                ],
+                'chooser' => [PercentChooser::class],
+                'default' => 'test_A'
+            ],
+        ]);
+
+        $eventsManager = $this->createMock(EventsManager::class);
+
+        $counter
+            ->expects($this->once())
+            ->method('saveCounter')
+            ->with('click', 'desktop', 'phpunit_ab_test', 'test_A');
+
+        $engine->setEventsManager($eventsManager);
+        $engine->saveClick('phpunit_ab_test', 'test_A');
     }
 
     public function getUserAgent()

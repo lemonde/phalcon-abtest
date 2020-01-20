@@ -165,20 +165,24 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
 
     public function savePrint(string $testName, string $template): void
     {
-        if (null !== $this->getEventsManager()) {
-            $this->getEventsManager()->fire('abtest:beforePrint', $this, [$testName, $template]);
-        }
+        if (null !== ($test = $this->getTest($testName)) && $test->getChooser()->isCountable($test, 'print')) {
+            if (null !== $this->getEventsManager()) {
+                $this->getEventsManager()->fire('abtest:beforePrint', $this, [$testName, $template]);
+            }
 
-        $this->counter->saveCounter('print', $this->getDevice(), $testName, $template);
+            $this->counter->saveCounter('print', $this->getDevice(), $testName, $template);
+        }
     }
 
     public function saveClick(string $testName, string $template): void
     {
-        if (null !== $this->getEventsManager()) {
-            $this->getEventsManager()->fire('abtest:beforeClick', $this, [$testName, $template]);
-        }
+        if (null !== ($test = $this->getTest($testName)) && $test->getChooser()->isCountable($test, 'click')) {
+            if (null !== $this->getEventsManager()) {
+                $this->getEventsManager()->fire('abtest:beforeClick', $this, [$testName, $template]);
+            }
 
-        $this->counter->saveCounter('click', $this->getDevice(), $testName, $template);
+            $this->counter->saveCounter('click', $this->getDevice(), $testName, $template);
+        }
     }
 
     /**

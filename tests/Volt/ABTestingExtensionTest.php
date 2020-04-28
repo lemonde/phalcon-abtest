@@ -260,9 +260,8 @@ class ABTestingExtensionTest extends TestCase
             ->with('testName')
             ->willReturn($test);
         $engine
-            ->expects($this->once())
-            ->method('savePrint')
-            ->with('testName', 'default');
+            ->expects($this->never())
+            ->method('savePrint');
 
         $this->assertEquals('https://www.example.org', ABTestingExtension::getTestClick('testName', 'https://www.example.org'));
     }

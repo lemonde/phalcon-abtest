@@ -87,7 +87,9 @@ class ABTestingExtension
                 $path = $target;
             }
 
-            $engine->savePrint($test->getIdentifier(), $winner->getIdentifier());
+            if ($path !== $target) {
+                $engine->savePrint($test->getIdentifier(), $winner->getIdentifier());
+            }
 
             return $path;
         } catch (\Throwable $t) {

@@ -92,7 +92,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
             $test = new Test($identifier);
             $defaultVariant = $definition['default'];
             foreach ($definition['variants'] as $key => $variantDefinition) {
-                $variant = new Variant($key, $variantDefinition, (string) $defaultVariant === (string) $key);
+                $variant = new Variant($key, $variantDefinition);
                 $test->addVariant($variant);
             }
             if (empty($test->getDefaultVariant())) {

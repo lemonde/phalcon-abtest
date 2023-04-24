@@ -6,7 +6,7 @@ use ABTesting\Engine;
 use ABTesting\Plugin\AnnotationListener;
 use ABTesting\Test\Test;
 use ABTesting\Tests\TestCase;
-use Phalcon\Annotations\Adapter;
+use Phalcon\Annotations\Adapter\Stream as Adapter;
 use Phalcon\Annotations\Annotation;
 use Phalcon\Annotations\Collection;
 use Phalcon\Events\Event;

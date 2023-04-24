@@ -12,7 +12,11 @@ spl_autoload_register(function ($namespace) {
         $phalconParts = explode("\\", $namespace);
         $phalcon = array_shift($phalconParts);
         $class = array_pop($phalconParts);
-        $phalconParts = array_map("strtolower", $phalconParts);
+
+        // Nouvelle fonction pour gérer la casse des répertoires
+        $phalconParts = array_map(function($part) {
+            return ucfirst(strtolower($part));
+        }, $phalconParts);
 
         $filePath = "$phalcon";
         $filePath .= ((empty($phalconParts)) ? '' : '/' . join('/', $phalconParts));

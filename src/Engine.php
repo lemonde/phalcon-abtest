@@ -40,7 +40,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      * @param DiInterface|null $di
      * @return Engine
      */
-    public static function getInstance(?DiInterface $di = null)
+    public static function getInstance(?DiInterface $di = null): Engine
     {
         if (empty(self::$instance)) {
             self::$instance = new self($di ?? Di::getDefault());
@@ -124,7 +124,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      * @param string $identifier
      * @return null|Test
      */
-    public function getTest(string $identifier)
+    public function getTest(string $identifier): ?Test
     {
         if (empty($this->tests[$identifier])) {
             if (null !== $this->getEventsManager()) {

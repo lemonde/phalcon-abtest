@@ -4,7 +4,6 @@ namespace ABTesting\Test;
 
 use ABTesting\Chooser\ChooserInterface;
 use ABTesting\Engine;
-use Phalcon\Di;
 
 /**
  * Class Test
@@ -43,9 +42,10 @@ class Test
 
     /**
      * Test constructor.
-     * @param string $identifier
-     * @param Variant[] $variants
-     * @param Variant $defaultVariant
+     *
+     * @param string                       $identifier
+     * @param Variant[]                    $variants
+     * @param \ABTesting\Test\Variant|null $defaultVariant
      */
     public function __construct(string $identifier, array $variants = [], Variant $defaultVariant = null)
     {
@@ -192,7 +192,7 @@ class Test
     /**
      * @return bool
      */
-    public function hasBattled()
+    public function hasBattled(): bool
     {
         return $this->hasBattled;
     }

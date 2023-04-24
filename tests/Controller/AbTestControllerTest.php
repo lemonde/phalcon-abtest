@@ -122,7 +122,7 @@ class AbTestControllerTest extends TestCase
         $controller->request
             ->expects($this->once())
             ->method('getHTTPReferer')
-            ->willReturn(null);
+            ->willReturn('');
 
         /** @var Engine|MockObject $engine */
         $engine = $this->createMockForSingleton(Engine::class);

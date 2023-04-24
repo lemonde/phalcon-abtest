@@ -2,7 +2,9 @@
 
 namespace Phalcon;
 
-class Di implements \Phalcon\DiInterface
+use Phalcon\Di\ServiceInterface;
+
+class Di implements \Phalcon\Di\DiInterface
 {
     /**
      * List of registered services
@@ -59,7 +61,7 @@ class Di implements \Phalcon\DiInterface
      * @param bool $shared
      * @return \Phalcon\Di\ServiceInterface
      */
-    public function set($name, $definition, $shared = false)
+    public function set($name, $definition, $shared = false): Di\ServiceInterface
     {
     }
 
@@ -68,7 +70,7 @@ class Di implements \Phalcon\DiInterface
      * @param mixed $definition
      * @return \Phalcon\Di\ServiceInterface
      */
-    public function setShared($name, $definition)
+    public function setShared($name, $definition): Di\ServiceInterface
     {
     }
 
@@ -110,7 +112,7 @@ class Di implements \Phalcon\DiInterface
      * @param string $name
      * @return \Phalcon\Di\ServiceInterface
      */
-    public function getService($name)
+    public function getService($name): ServiceInterface
     {
     }
 
@@ -136,7 +138,7 @@ class Di implements \Phalcon\DiInterface
      * @param string $name
      * @return bool
      */
-    public function has($name)
+    public function has($name): bool
     {
     }
 
@@ -150,7 +152,7 @@ class Di implements \Phalcon\DiInterface
     /**
      * @return \Phalcon\Di\Service[]
      */
-    public function getServices()
+    public function getServices(): array
     {
     }
 
@@ -204,16 +206,16 @@ class Di implements \Phalcon\DiInterface
     }
 
     /**
-     * @param \Phalcon\DiInterface $dependencyInjector
+     * @param \Phalcon\DI\DiInterface $dependencyInjector
      */
-    public static function setDefault(\Phalcon\DiInterface $dependencyInjector)
+    public static function setDefault(\Phalcon\DI\DiInterface $dependencyInjector)
     {
     }
 
     /**
-     * @return null|\Phalcon\DiInterface
+     * @return null|\Phalcon\DI\DiInterface
      */
-    public static function getDefault()
+    public static function getDefault(): ?Di\DiInterface
     {
         return self::$_default;
     }
@@ -247,4 +249,7 @@ class Di implements \Phalcon\DiInterface
     {
     }
 
+    public function setService(string $name, ServiceInterface $rawDefinition): ServiceInterface
+    {
+    }
 }

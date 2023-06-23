@@ -1,20 +1,20 @@
 # CHANGELOG
 
-## 1.2.1 1.2.0 
+## 2.0.0 2.0.0 
 
 
-### Bug Fixes
+### Features
 
-  - **count**
-    - prevents count of default link display
-  ([71501cd1](https://github.com/lemonde/phalcon-abtest/commit/71501cd1d6e9a7a8cd60df475868b285065b6870))
+  - **phalcon4**
+    - Update methods fix tests refacto for phalcon 4
+  ([10cc086d](https://github.com/lemonde/phalcon-abtest/commit/10cc086d104d9147d6af8bc1610069884b82b3b7))
 
 
 
 
 ### Pull requests merged
-  - Merge pull request #7 from lemonde/fix/default-variant-count
-  ([9e66f92c](https://github.com/lemonde/phalcon-abtest/commit/9e66f92c169cbdc35723b3c920909fe7be484f52))
+  - Merge pull request #5 from lemonde/feat/upgrade-to-phalcon-4
+  ([9e66f92c](https://github.com/lemonde/phalcon-abtest/commit/fefd3c66cf810d758b8f819cf96c8adbefd9f30b))
 
 
 

@@ -67,6 +67,11 @@ class Redis extends \Phalcon\Cache\Backend\Redis {
 
 ## Installation
 
+Versions :
+- 1.X : Phalcon 3
+- 2.X : Phalcon 4
+- 3.X : Phalcon 5
+
 1. Ajouter la dépendance
 
    > Il faut rajouter le repository git dans votre configuration Composer

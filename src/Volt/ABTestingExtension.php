@@ -4,7 +4,7 @@ namespace ABTesting\Volt;
 
 use ABTesting\Engine;
 use ABTesting\Exception\AbTestingException;
-use Phalcon\Di;
+use Phalcon\Di\Di;
 
 class ABTestingExtension
 {

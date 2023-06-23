@@ -10,7 +10,7 @@ use Detection\MobileDetect;
 use Phalcon\Config;
 use Phalcon\Di;
 use Phalcon\Di\InjectionAwareInterface;
-use Phalcon\DiInterface;
+use Phalcon\Di\DiInterface;
 use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\ManagerInterface;
 
@@ -40,7 +40,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      * @param DiInterface|null $di
      * @return Engine
      */
-    public static function getInstance(?DiInterface $di = null)
+    public static function getInstance(?DiInterface $di = null): Engine
     {
         if (empty(self::$instance)) {
             self::$instance = new self($di ?? Di::getDefault());
@@ -124,7 +124,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      * @param string $identifier
      * @return null|Test
      */
-    public function getTest(string $identifier)
+    public function getTest(string $identifier): ?Test
     {
         if (empty($this->tests[$identifier])) {
             if (null !== $this->getEventsManager()) {
@@ -187,12 +187,11 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
 
     /**
      * @param ManagerInterface $eventsManager
-     * @return $this
+     * @return void
      */
-    public function setEventsManager(ManagerInterface $eventsManager)
+    public function setEventsManager(ManagerInterface $eventsManager): void
     {
         $this->eventsManager = $eventsManager;
-        return $this;
     }
 
     /**
@@ -233,12 +232,11 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      * Sets the dependency injector
      *
      * @param DiInterface $dependencyInjector
-     * @return Engine
+     * @return void
      */
-    public function setDI(DiInterface $dependencyInjector)
+    public function setDI(DiInterface $dependencyInjector): void
     {
         $this->dependencyInjector = $dependencyInjector;
-        return $this;
     }
 
     /**
@@ -246,7 +244,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      *
      * @return null|DiInterface
      */
-    public function getDI()
+    public function getDI(): DiInterface
     {
         return $this->dependencyInjector;
     }
@@ -256,7 +254,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
      *
      * @return null|ManagerInterface
      */
-    public function getEventsManager()
+    public function getEventsManager(): ?ManagerInterface
     {
         return $this->eventsManager;
     }

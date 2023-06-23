@@ -9,7 +9,7 @@ use ABTesting\Tests\TestCase;
 use ABTesting\Volt\ABTestingExtension;
 use Phalcon\Di;
 use Phalcon\Events\Manager as EventsManager;
-use Phalcon\Mvc\Url;
+use Phalcon\Url;
 
 class ABTestingExtensionTest extends TestCase
 {

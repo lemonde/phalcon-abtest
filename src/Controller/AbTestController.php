@@ -4,8 +4,6 @@ namespace ABTesting\Controller;
 
 use ABTesting\Engine;
 use ABTesting\Exception\AbTestingException;
-use Phalcon\Mvc\Dispatcher;
-use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Mvc\View\Simple as SimpleView;

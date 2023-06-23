@@ -5,7 +5,6 @@ namespace ABTesting\Volt;
 use ABTesting\Engine;
 use ABTesting\Exception\AbTestingException;
 use Phalcon\Di;
-use Phalcon\Di\Injectable;
 
 class ABTestingExtension
 {
@@ -102,7 +101,7 @@ class ABTestingExtension
         }
     }
 
-    public static function getTestHref(string $testName, string $target, $winnerName = null)
+    public static function getTestHref(string $testName, string $target, $winnerName = null): string
     {
         $counterLink = self::getTestClick($testName, $target, $winnerName);
         $attributes = 'href="' . htmlspecialchars($target, ENT_QUOTES) . '" ';

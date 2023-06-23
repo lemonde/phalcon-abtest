@@ -2,17 +2,13 @@
 
 namespace ABTesting\Tests;
 
-use ABTesting\Chooser\ChooserInterface;
 use ABTesting\Chooser\PercentChooser;
 use ABTesting\Counter\AbTestCounter;
 use ABTesting\Engine;
-use ABTesting\Exception\AbTestingException;
 use ABTesting\Test\Test;
-use ABTesting\Test\Variant;
 use Phalcon\Config;
-use Phalcon\DiInterface;
+use Phalcon\DI\DiInterface;
 use Phalcon\Events\Manager as EventsManager;
-use Phalcon\Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -30,8 +26,10 @@ class EngineTest extends TestCase
 
     /**
      * @dataProvider getUserAgent
+     *
      * @param string $userAgent
-     * @throws Exception
+     *
+     * @return \ABTesting\Engine
      */
     public function testGetInstance(string $userAgent) {
         $_SERVER['HTTP_USER_AGENT'] = $userAgent;
@@ -94,6 +92,9 @@ class EngineTest extends TestCase
         $this->assertTrue($engine->isActivated());
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testSavePrintNoTest() {
         list($engine, $counter) = $this->getEngine([]);
 
@@ -168,7 +169,7 @@ class EngineTest extends TestCase
         $engine->saveClick('phpunit_ab_test', 'test_A');
     }
 
-    public function getUserAgent()
+    public function getUserAgent(): array
     {
         return [
             'Desktop' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'],
@@ -180,9 +181,8 @@ class EngineTest extends TestCase
     /**
      * @param array $tests
      * @return array
-     * @throws \ReflectionException
      */
-    public function getEngine(array $tests = [])
+    public function getEngine(array $tests = []): array
     {
         $counter = $this->createMock(AbTestCounter::class);
         $di = $this->getDi($tests);

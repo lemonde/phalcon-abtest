@@ -2,8 +2,6 @@
 
 namespace ABTesting\Counter;
 
-use ABTesting\Engine;
-use Phalcon\Cache\Backend\Redis;
 use Phalcon\Config;
 use Phalcon\Di\Injectable;
 
@@ -11,7 +9,7 @@ use Phalcon\Di\Injectable;
  * Class AbTestCounter
  *
  * @property Config $config
- * @property Redis $cache
+ * @property \Redis $cache
  */
 class AbTestCounter extends Injectable
 {

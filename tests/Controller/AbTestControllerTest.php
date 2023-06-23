@@ -8,7 +8,7 @@ use ABTesting\Exception\AbTestingException;
 use ABTesting\Test\Test;
 use ABTesting\Test\Variant;
 use Phalcon\Events\Manager as EventsManager;
-use Phalcon\Exception;
+use Exception;
 use Phalcon\Http\Request;
 use ABTesting\Tests\TestCase;
 use Phalcon\Http\Response;

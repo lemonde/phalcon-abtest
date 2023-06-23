@@ -7,9 +7,9 @@ use ABTesting\Test\Test;
 use ABTesting\Test\Variant;
 use ABTesting\Tests\TestCase;
 use ABTesting\Volt\ABTestingExtension;
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Events\Manager as EventsManager;
-use Phalcon\Url;
+use Phalcon\Mvc\Url;
 
 class ABTestingExtensionTest extends TestCase
 {
@@ -108,7 +108,7 @@ class ABTestingExtensionTest extends TestCase
             )
             ->willReturn('/the/ab_test_redirect/url');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->once())
             ->method('get')
@@ -150,7 +150,7 @@ class ABTestingExtensionTest extends TestCase
             )
             ->willReturn('/the/ab_test_redirect/url_forced');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->once())
             ->method('get')
@@ -195,7 +195,7 @@ class ABTestingExtensionTest extends TestCase
             )
             ->willReturn('/the/ab_test_redirect/url');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->never())
             ->method('get')
@@ -237,7 +237,7 @@ class ABTestingExtensionTest extends TestCase
             )
             ->willReturn('/the/ab_test_redirect/url');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->once())
             ->method('get')
@@ -273,7 +273,7 @@ class ABTestingExtensionTest extends TestCase
             ->expects($this->never())
             ->method('get');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->never())
             ->method('get');
@@ -301,7 +301,7 @@ class ABTestingExtensionTest extends TestCase
             ->expects($this->never())
             ->method('get');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->never())
             ->method('get');
@@ -334,7 +334,7 @@ class ABTestingExtensionTest extends TestCase
             )
             ->willReturn('/the/ab_test_redirect/url');
 
-        $di = $this->createMockForSingleton(Di::class, '_default');
+        $di = $this->createMockForSingleton(Di::class, 'defaultDi');
         $di
             ->expects($this->once())
             ->method('get')

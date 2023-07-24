@@ -2,7 +2,7 @@
 
 namespace ABTesting\Counter;
 
-use Phalcon\Config;
+use Phalcon\Config\Config;
 use Phalcon\Di\Injectable;
 
 /**

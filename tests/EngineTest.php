@@ -6,7 +6,7 @@ use ABTesting\Chooser\PercentChooser;
 use ABTesting\Counter\AbTestCounter;
 use ABTesting\Engine;
 use ABTesting\Test\Test;
-use Phalcon\Config;
+use Phalcon\Config\Config;
 use Phalcon\DI\DiInterface;
 use Phalcon\Events\Manager as EventsManager;
 use PHPUnit\Framework\TestCase;

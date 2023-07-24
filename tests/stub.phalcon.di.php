@@ -1,179 +1,296 @@
 <?php
 
-namespace Phalcon;
+namespace Phalcon\Di;
 
+use Phalcon\Di\DiInterface;
+use Phalcon\Di\Service;
+use Phalcon\Di\Exception;
+use Phalcon\Di\Exception\ServiceResolutionException;
+use Phalcon\Config\Adapter\Php;
+use Phalcon\Config\Adapter\Yaml;
+use Phalcon\Config\ConfigInterface;
 use Phalcon\Di\ServiceInterface;
+use Phalcon\Events\ManagerInterface;
+use Phalcon\Di\InitializationAwareInterface;
+use Phalcon\Di\InjectionAwareInterface;
+use Phalcon\Di\ServiceProviderInterface;
 
+/**
+ * Phalcon\Di\Di is a component that implements Dependency Injection/Service
+ * Location of services and it's itself a container for them.
+ *
+ * Since Phalcon is highly decoupled, Phalcon\Di\Di is essential to integrate the
+ * different components of the framework. The developer can also use this
+ * component to inject dependencies and manage global instances of the different
+ * classes used in the application.
+ *
+ * Basically, this component implements the `Inversion of Control` pattern.
+ * Applying this, the objects do not receive their dependencies using setters or
+ * constructors, but requesting a service dependency injector. This reduces the
+ * overall complexity, since there is only one way to get the required
+ * dependencies within a component.
+ *
+ * Additionally, this pattern increases testability in the code, thus making it
+ * less prone to errors.
+ *
+ * ```php
+ * use Phalcon\Di\Di;
+ * use Phalcon\Http\Request;
+ *
+ * $di = new Di();
+ *
+ * // Using a string definition
+ * $di->set("request", Request::class, true);
+ *
+ * // Using an anonymous function
+ * $di->setShared(
+ *     "request",
+ *     function () {
+ *         return new Request();
+ *     }
+ * );
+ *
+ * $request = $di->getRequest();
+ * ```
+ */
 class Di implements \Phalcon\Di\DiInterface
 {
     /**
      * List of registered services
+     *
+     * @var ServiceInterface[]
      */
-    protected $_services;
+    protected $services = [];
 
     /**
      * List of shared instances
+     *
+     * @var array
      */
-    protected $_sharedInstances;
-
-    /**
-     * To know if the latest resolved instance was shared or not
-     */
-    protected $_freshInstance = false;
+    protected $sharedInstances = [];
 
     /**
      * Events Manager
      *
-     * @var \Phalcon\Events\ManagerInterface
+     * @var ManagerInterface|null
      */
-    protected $_eventsManager;
+    protected $eventsManager = null;
 
     /**
      * Latest DI build
+     *
+     * @var DiInterface|null
      */
-    static protected $_default;
-
+    protected static $defaultDi;
 
     /**
-     * Phalcon\Di constructor
+     * Phalcon\Di\Di constructor
      */
     public function __construct()
     {
     }
 
     /**
-     * @param \Phalcon\Events\ManagerInterface $eventsManager
+     * Magic method to get or set services using setters/getters
+     *
+     * @param string $method
+     * @param array $arguments
+     * @return mixed|null
      */
-    public function setInternalEventsManager(\Phalcon\Events\ManagerInterface $eventsManager)
+    public function __call(string $method, array $arguments = [])
     {
     }
 
     /**
-     * @return \Phalcon\Events\ManagerInterface
-     */
-    public function getInternalEventsManager()
-    {
-    }
-
-    /**
+     * Attempts to register a service in the services container
+     * Only is successful if a service hasn't been registered previously
+     * with the same name
+     *
      * @param string $name
      * @param mixed $definition
      * @param bool $shared
-     * @return \Phalcon\Di\ServiceInterface
+     * @return bool|ServiceInterface
      */
-    public function set($name, $definition, $shared = false): Di\ServiceInterface
+    public function attempt(string $name, $definition, bool $shared = false)
     {
     }
 
     /**
-     * @param string $name
-     * @param mixed $definition
-     * @return \Phalcon\Di\ServiceInterface
-     */
-    public function setShared($name, $definition): Di\ServiceInterface
-    {
-    }
-
-    /**
-     * @param string $name
-     */
-    public function remove($name)
-    {
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $definition
-     * @param bool $shared
-     * @return bool|\Phalcon\Di\ServiceInterface
-     */
-    public function attempt($name, $definition, $shared = false)
-    {
-    }
-
-    /**
-     * @param string $name
-     * @param \Phalcon\Di\ServiceInterface $rawDefinition
-     * @return \Phalcon\Di\ServiceInterface
-     */
-    public function setRaw($name, \Phalcon\Di\ServiceInterface $rawDefinition)
-    {
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function getRaw($name)
-    {
-    }
-
-    /**
-     * @param string $name
-     * @return \Phalcon\Di\ServiceInterface
-     */
-    public function getService($name): ServiceInterface
-    {
-    }
-
-    /**
+     * Resolves the service based on its configuration
+     *
      * @param string $name
      * @param mixed $parameters
      * @return mixed
      */
-    public function get($name, $parameters = null)
+    public function get(string $name, $parameters = null)
     {
     }
 
     /**
+     * Return the latest DI created
+     *
+     * @return DiInterface|null
+     */
+    public static function getDefault(): ?DiInterface
+    {
+        return self::$defaultDi;
+    }
+
+    /**
+     * Returns the internal event manager
+     *
+     * @return ManagerInterface|null
+     */
+    public function getInternalEventsManager(): ?ManagerInterface
+    {
+    }
+
+    /**
+     * Returns a service definition without resolving
+     *
      * @param string $name
-     * @param array $parameters
      * @return mixed
      */
-    public function getShared($name, $parameters = null)
+    public function getRaw(string $name)
     {
     }
 
     /**
+     * Returns a Phalcon\Di\Service instance
+     *
      * @param string $name
-     * @return bool
+     * @return ServiceInterface
      */
-    public function has($name): bool
+    public function getService(string $name): ServiceInterface
     {
     }
 
     /**
-     * @return bool
-     */
-    public function wasFreshInstance()
-    {
-    }
-
-    /**
-     * @return \Phalcon\Di\Service[]
+     * Return the services registered in the DI
+     *
+     * @return array|\Phalcon\Di\ServiceInterface[]
      */
     public function getServices(): array
     {
     }
 
     /**
-     * @param mixed $name
-     * @return bool
+     * Resolves a service, the resolved service is stored in the DI, subsequent
+     * requests for this service will return the same instance
+     *
+     * @param string $name
+     * @param mixed $parameters
+     * @return mixed
      */
-    public function offsetExists($name)
+    public function getShared(string $name, $parameters = null)
     {
     }
 
     /**
-     * @param mixed $name
-     * @param mixed $definition
-     * @return bool
+     * Loads services from a Config object.
+     *
+     * @param \Phalcon\Config\ConfigInterface $config
+     * @return void
      */
-    public function offsetSet($name, $definition)
+    protected function loadFromConfig(\Phalcon\Config\ConfigInterface $config): void
     {
     }
 
     /**
+     * Loads services from a php config file.
+     *
+     * ```php
+     * $di->loadFromPhp("path/services.php");
+     * ```
+     *
+     * And the services can be specified in the file as:
+     *
+     * ```php
+     * return [
+     *      'myComponent' => [
+     *          'className' => '\Acme\Components\MyComponent',
+     *          'shared' => true,
+     *      ],
+     *      'group' => [
+     *          'className' => '\Acme\Group',
+     *          'arguments' => [
+     *              [
+     *                  'type' => 'service',
+     *                  'service' => 'myComponent',
+     *              ],
+     *          ],
+     *      ],
+     *      'user' => [
+     *          'className' => '\Acme\User',
+     *      ],
+     * ];
+     * ```
+     *
+     * @link https://docs.phalcon.io/en/latest/reference/di.html
+     * @param string $filePath
+     * @return void
+     */
+    public function loadFromPhp(string $filePath): void
+    {
+    }
+
+    /**
+     * Loads services from a yaml file.
+     *
+     * ```php
+     * $di->loadFromYaml(
+     *     "path/services.yaml",
+     *     [
+     *         "!approot" => function ($value) {
+     *             return dirname(__DIR__) . $value;
+     *         }
+     *     ]
+     * );
+     * ```
+     *
+     * And the services can be specified in the file as:
+     *
+     * ```php
+     * myComponent:
+     *     className: \Acme\Components\MyComponent
+     *     shared: true
+     *
+     * group:
+     *     className: \Acme\Group
+     *     arguments:
+     *         - type: service
+     *           name: myComponent
+     *
+     * user:
+     *    className: \Acme\User
+     * ```
+     *
+     * @link https://docs.phalcon.io/en/latest/reference/di.html
+     * @param string $filePath
+     * @param array $callbacks
+     * @return void
+     */
+    public function loadFromYaml(string $filePath, array $callbacks = null): void
+    {
+    }
+
+    /**
+     * Check whether the DI contains a service by a name
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function has(string $name): bool
+    {
+    }
+
+    /**
+     * Allows to obtain a shared service using the array syntax
+     *
+     * ```php
+     * var_dump($di["request"]);
+     * ```
+     *
      * @param mixed $name
      * @return mixed
      */
@@ -182,74 +299,139 @@ class Di implements \Phalcon\Di\DiInterface
     }
 
     /**
+     * Check if a service is registered using the array syntax
+     *
      * @param mixed $name
      * @return bool
      */
-    public function offsetUnset($name)
+    public function offsetExists($name): bool
     {
     }
 
     /**
-     * @param string $method
-     * @param mixed $arguments
-     * @return mixed|null
+     * Allows to register a shared service using the array syntax
+     *
+     * ```php
+     * $di["request"] = new \Phalcon\Http\Request();
+     * ```
+     *
+     * @param mixed $name
+     * @param mixed $definition
+     * @return void
      */
-    public function __call($method, $arguments = null)
+    public function offsetSet($name, $definition): void
     {
     }
 
     /**
+     * Removes a service from the services container using the array syntax
+     *
+     * @param mixed $name
+     * @return void
+     */
+    public function offsetUnset($name): void
+    {
+    }
+
+    /**
+     * Registers a service provider.
+     *
+     * ```php
+     * use Phalcon\Di\DiInterface;
+     * use Phalcon\Di\ServiceProviderInterface;
+     *
+     * class SomeServiceProvider implements ServiceProviderInterface
+     * {
+     *     public function register(DiInterface $di)
+     *     {
+     *         $di->setShared(
+     *             'service',
+     *             function () {
+     *                 // ...
+     *             }
+     *         );
+     *     }
+     * }
+     * ```
+     *
      * @param \Phalcon\Di\ServiceProviderInterface $provider
+     * @return void
      */
-    public function register(\Phalcon\Di\ServiceProviderInterface $provider)
+    public function register(\Phalcon\Di\ServiceProviderInterface $provider): void
     {
     }
 
     /**
-     * @param \Phalcon\DI\DiInterface $dependencyInjector
+     * Removes a service in the services container
+     * It also removes any shared instance created for the service
+     *
+     * @param string $name
+     * @return void
      */
-    public static function setDefault(\Phalcon\DI\DiInterface $dependencyInjector)
+    public function remove(string $name): void
     {
-    }
-
-    /**
-     * @return null|\Phalcon\DI\DiInterface
-     */
-    public static function getDefault(): ?Di\DiInterface
-    {
-        return self::$_default;
     }
 
     /**
      * Resets the internal default DI
+     *
+     * @return void
      */
-    public static function reset()
+    public static function reset(): void
     {
     }
 
     /**
-     * @param string $filePath
-     * @param array $callbacks
+     * Registers a service in the services container
+     *
+     * @param string $name
+     * @param mixed $definition
+     * @param bool $shared
+     * @return ServiceInterface
      */
-    public function loadFromYaml($filePath, array $callbacks = null)
+    public function set(string $name, $definition, bool $shared = false): ServiceInterface
     {
     }
 
     /**
-     * @param string $filePath
+     * Set a default dependency injection container to be obtained into static
+     * methods
+     *
+     * @param \Phalcon\Di\DiInterface $container
+     * @return void
      */
-    public function loadFromPhp($filePath)
+    public static function setDefault(\Phalcon\Di\DiInterface $container): void
     {
     }
 
     /**
-     * @param \Phalcon\Config $config
+     * Sets the internal event manager
+     *
+     * @param \Phalcon\Events\ManagerInterface $eventsManager
      */
-    protected function loadFromConfig(\Phalcon\Config $config)
+    public function setInternalEventsManager(\Phalcon\Events\ManagerInterface $eventsManager)
     {
     }
 
-    public function setService(string $name, ServiceInterface $rawDefinition): ServiceInterface
+    /**
+     * Sets a service using a raw Phalcon\Di\Service definition
+     *
+     * @param string $name
+     * @param \Phalcon\Di\ServiceInterface $rawDefinition
+     * @return ServiceInterface
+     */
+    public function setService(string $name, \Phalcon\Di\ServiceInterface $rawDefinition): ServiceInterface
+    {
+    }
+
+    /**
+     * Registers an "always shared" service in the services container
+     *
+     * @param string $name
+     * @param mixed $definition
+     * @return ServiceInterface
+     */
+    public function setShared(string $name, $definition): ServiceInterface
     {
     }
 }

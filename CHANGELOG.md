@@ -1,20 +1,20 @@
 # CHANGELOG
 
-## 2.0.0 2.0.0 
+## 3.0.0 3.0.0 
 
 
 ### Features
 
-  - **phalcon4**
-    - Update methods fix tests refacto for phalcon 4
-  ([10cc086d](https://github.com/lemonde/phalcon-abtest/commit/10cc086d104d9147d6af8bc1610069884b82b3b7))
+  - **phalcon5**
+    - Update methods fix tests refacto for phalcon 5
+  ([6af8aa07](https://github.com/lemonde/phalcon-abtest/commit/6af8aa07208d49609bbcd904d316aea23c83e9a1))
 
 
 
 
 ### Pull requests merged
-  - Merge pull request #5 from lemonde/feat/upgrade-to-phalcon-4
-  ([9e66f92c](https://github.com/lemonde/phalcon-abtest/commit/fefd3c66cf810d758b8f819cf96c8adbefd9f30b))
+  - Merge pull request #5 from lemonde/feat/phalcon-5
+  ([eb9a1196](https://github.com/lemonde/phalcon-abtest/commit/eb9a11968130836a02ac3fb5b085510bf788d56a))
 
 
 

@@ -1,22 +1,31 @@
 # CHANGELOG
 
-## 3.0.0 3.0.0 
+## 3.0.1
+- bump mobiledetect
 
+## 3.0.0
+- Update methods fix tests refacto for phalcon 5
 
-### Features
+## 2.0.0
+- Update methods fix tests refacto for phalcon 4
 
-  - **phalcon5**
-    - Update methods fix tests refacto for phalcon 5
-  ([6af8aa07](https://github.com/lemonde/phalcon-abtest/commit/6af8aa07208d49609bbcd904d316aea23c83e9a1))
+## 1.2.1
+- prevents count of default link display
 
+## 1.1.1
+- prefer not throwing exception when test not found
 
+## 1.1.0
+- add volt function ab_test_href
+- prevents error to be thrown, prefers 404 with event
+- Doc: add more usage examples
+- Volt: add events on errors
 
+## 1.0.2
+- result is null only on errors
 
-### Pull requests merged
-  - Merge pull request #5 from lemonde/feat/phalcon-5
-  ([eb9a1196](https://github.com/lemonde/phalcon-abtest/commit/eb9a11968130836a02ac3fb5b085510bf788d56a))
+## 1.0.1
+- allow forced winner to tests
 
-
-
-
-
+## 1.0.0
+- added a version helper for git-changelog

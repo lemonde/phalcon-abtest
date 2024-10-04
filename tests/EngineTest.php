@@ -200,17 +200,11 @@ class EngineTest extends TestCase
     public function getDi(array $tests = [])
     {
         $di = $this->createMock(DiInterface::class);
-        $config = $this->createMock(Config::class);
         $abTestConfig = $this->createMock(Config::class);
         $di
             ->expects($this->any())
             ->method('get')
-            ->with('config')
-            ->willReturn($config);
-        $config
-            ->expects($this->any())
-            ->method('get')
-            ->with('ab_test', $this->isInstanceOf(Config::class))
+            ->with('phalcon-abtest.tests')
             ->willReturn($abTestConfig);
         $abTestConfig
             ->expects($this->any())

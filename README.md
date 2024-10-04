@@ -118,14 +118,11 @@ Versions :
           $router->add('/_my_ab_dashboard', ['controller' => 'ab_test', 'action' => 'report', 'namespace' => 'ABTesting\Controller'])->setName('ab_test_report');
           ```
       
-3. Ajouter la configuration des tests A/B (via un service nommé `config` utilisant `\Phalcon\Config`)
+3. Ajouter un service nommé `phalcon-abtest.tests` (utilisant `\Phalcon\Config`) renvoyant la configuration des tests A/B 
 
     ```php
-    $config = new Phalcon\Config([
-        
-        // ...
-        
-        'ab_test' => [
+    $di->setShared('phalcon-abtest.tests', function () {
+        return new Phalcon\Config([
             'home_text_content' => [
                 'default' => 'home_test_A',
                 'variants' => [
@@ -150,9 +147,8 @@ Versions :
                 ],
                 'chooser' => [\ABTesting\Chooser\PercentChooser::class]
             ],
-        ],
-    
-    ]);
+        ]);
+    });
     ```
    
     Plus d'info [ici](#configuration-des-tests-ab)

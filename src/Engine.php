@@ -76,7 +76,8 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
     {
         $this->counter = new AbTestCounter();
         $this->setDI($di);
-        $tests = $this->getDI()->get('config')->get('ab_test', new Config([]))->toArray();
+
+        $tests = $this->getDI()->get('phalcon-abtest.tests')->toArray();
 
         $detect = new MobileDetect();
 

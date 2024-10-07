@@ -270,3 +270,28 @@ Pour configurer vos tests A/B, tout se fait dans une conf en tableau sous la for
   - `abtest:afterBattle`: après le calcul d'un test
   - `abtest:beforePrint`: avant l'affichage du résultat via volt
   - `abtest:beforeClick`: avant la redirection via le lien du test
+
+
+# Exécuter les tests en local
+
+- Build l'image de test en local
+```bash
+docker build -t phalcon-abtest .
+```
+
+- Lancer le conteneur et ouvrir une session bash
+```bash
+docker run --rm -it -v "$PWD":/app phalcon-abtest 
+```
+
+- installer les packages PHP
+
+```bash
+composer install
+```
+
+- Exécuter les tests
+
+```bash
+./vendor/bin/phpunit --no-coverage
+```

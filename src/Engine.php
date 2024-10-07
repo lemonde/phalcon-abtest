@@ -4,9 +4,9 @@ namespace ABTesting;
 
 use ABTesting\Counter\AbTestCounter;
 use ABTesting\Exception\AbTestingException;
+use ABTesting\DeviceProvider\DeviceProviderInterface;
 use ABTesting\Test\Test;
 use ABTesting\Test\Variant;
-use Detection\MobileDetect;
 use Phalcon\Config\Config;
 use Phalcon\Di\Di;
 use Phalcon\Di\InjectionAwareInterface;
@@ -79,14 +79,16 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
 
         $tests = $this->getDI()->get('phalcon-abtest.tests')->toArray();
 
-        $detect = new MobileDetect();
-
         $this->setDevice('desktop');
 
-        if ($detect->isTablet()) {
-            $this->setDevice('tablet');
-        } elseif ($detect->isMobile()) {
-            $this->setDevice('mobile');
+        if ($this->getDI()->has('phalcon-abtest.device_provider')) {
+            $deviceProvider = $this->getDI()->get('phalcon-abtest.device_provider');
+
+            if (!$deviceProvider instanceof DeviceProviderInterface) {
+                throw new AbTestingException('Device provider must be an instance of ' . DeviceProviderInterface::class);
+            }
+
+            $this->setDevice($deviceProvider->getDevice());
         }
 
         foreach ($tests as $identifier => $definition) {

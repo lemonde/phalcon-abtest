@@ -4,6 +4,7 @@ namespace ABTesting\Tests;
 
 use ABTesting\Chooser\PercentChooser;
 use ABTesting\Counter\AbTestCounter;
+use ABTesting\DeviceProvider\DeviceProviderInterface;
 use ABTesting\Engine;
 use ABTesting\Test\Test;
 use Phalcon\Config\Config;
@@ -169,6 +170,45 @@ class EngineTest extends TestCase
         $engine->saveClick('phpunit_ab_test', 'test_A');
     }
 
+    /**
+     * @dataProvider getDataDeviceProvider
+     */
+    public function testDeviceProvider($hasDeviceProvider, $device, $expectedDevice)
+    {
+        $di = $this->createMock(DiInterface::class);
+
+        $di
+            ->expects($this->any())
+            ->method('has')
+            ->with('phalcon-abtest.device_provider')
+            ->willReturn($hasDeviceProvider);
+
+        $di->expects($this->any())
+            ->method('get')
+            ->willReturnCallback(function ($name) use ($hasDeviceProvider, $device) {
+                if ($name === 'phalcon-abtest.tests') {
+                    return $this->createMock(Config::class);
+                } elseif ($name === 'phalcon-abtest.device_provider' && $hasDeviceProvider) {
+                    return $this->getDeviceProvider($device);
+                }
+
+                throw new \LogicException('Invalid call di->get("' . $name . '")');
+            });
+
+        $engine = Engine::getInstance($di);
+        $this->assertEquals($expectedDevice, $engine->getDevice());
+    }
+
+    public function getDataDeviceProvider()
+    {
+        return [
+            [false, null, 'desktop'],
+            [true, 'mobile', 'mobile'],
+            [true, 'tablet', 'tablet'],
+            [true, 'desktop', 'desktop'],
+        ];
+    }
+
     public function getUserAgent(): array
     {
         return [
@@ -214,5 +254,21 @@ class EngineTest extends TestCase
             });
 
         return $di;
+    }
+
+    public function getDeviceProvider($device = null): DeviceProviderInterface
+    {
+        return new class ($device) implements DeviceProviderInterface {
+            private $device;
+            public function __construct($device)
+            {
+                $this->device = $device;
+            }
+
+            public function getDevice()
+            {
+                return $this->device;
+            }
+        };
     }
 }

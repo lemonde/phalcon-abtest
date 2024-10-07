@@ -111,6 +111,28 @@ Versions :
       # et un autre nommé winner
       $router->add('/_my_ab_redirection/{testName:[a-zA-Z0-9\_]+}/{winner:[a-zA-Z0-9\_]+}', ['controller' => 'ab_test', 'action' => 'count', 'namespace' => 'ABTesting\Controller'])->setName('ab_test_redirect');
       ```
+   4. Spécifier le device du client, deux méthodes :
+      
+      - en le faisant manuellement depuis le contrôleur
+      ```php
+      public function beforeExecuteRoute(Dispatcher $dispatcher)
+      {
+          ABTestEngine::getInstance()->setDevice('desktop');
+      }
+      ```
+      
+      - ou via un service nommé `phalcon-abtest.device_provider` qui implémente l'interface [DeviceProviderInterface.php](src/DeviceProvider/DeviceProviderInterface.php)
+
+      ```php
+      $di->setShared('phalcon-abtest.device_provider', function () {
+          return new class () extends ABTesting\DeviceProvider\DeviceProviderInterface {
+              public function getDevice()
+              {
+                  return 'desktop';
+              }
+          } 
+      });
+      ```
       
     4. **(Optionnel)** Ajouter le reporting au routing:
        

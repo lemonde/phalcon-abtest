@@ -2,6 +2,7 @@
     "name": "lemonde/phalcon-abtest",
     "description": "An AB testing library for Phalcon applications",
     "type": "library",
+    "version": "3.0.1",
     "require-dev": {
         "phalcon/ide-stubs": "^5.0",
         "phpunit/phpunit": "^7"
@@ -25,6 +26,6 @@
     },
     "require": {
         "ext-redis": "*",
-        "mobiledetect/mobiledetectlib": "^3.74"
+        "php": "^7.4"
     }
 }

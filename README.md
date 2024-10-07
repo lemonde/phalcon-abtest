@@ -134,6 +134,26 @@ Versions :
       });
       ```
       
+      Vous pouvez utiliser mobiledetect/mobiledetectlib via le service device_provider:
+      ```php
+      $di->setShared('phalcon-abtest.device_provider', function () {
+          return new class () extends ABTesting\DeviceProvider\DeviceProviderInterface {
+              public function getDevice()
+              {
+                  $detect = new MobileDetect();
+
+                  if ($detect->isTablet()) {
+                      return 'tablet';
+                  } elseif ($detect->isMobile()) {
+                      return 'mobile'
+                  }
+                  
+                  return 'desktop';
+              }
+          } 
+      });
+      ```
+      
     4. **(Optionnel)** Ajouter le reporting au routing:
        
           ```php

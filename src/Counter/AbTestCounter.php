@@ -26,6 +26,7 @@ class AbTestCounter extends Injectable
 
     public function getCount(string $testName, string $restriction): array
     {
-        return $this->cache->hScan($testName, $restriction);
+        $iterator = null;
+        return $this->cache->hScan($testName, $iterator, $restriction);
     }
 }

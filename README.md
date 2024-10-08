@@ -276,7 +276,7 @@ Pour configurer vos tests A/B, tout se fait dans une conf en tableau sous la for
 
 - Build l'image de test en local
 ```bash
-docker build -t phalcon-abtest .
+docker build --no-cache -t phalcon-abtest .
 ```
 
 - Lancer le conteneur et ouvrir une session bash

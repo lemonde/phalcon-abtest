@@ -26,12 +26,12 @@ class EngineTest extends TestCase
     }
 
     /**
-     * @dataProvider getUserAgent
      *
      * @param string $userAgent
      *
      * @return \ABTesting\Engine
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getUserAgent')]
     public function testGetInstance(string $userAgent) {
         $_SERVER['HTTP_USER_AGENT'] = $userAgent;
 
@@ -170,9 +170,7 @@ class EngineTest extends TestCase
         $engine->saveClick('phpunit_ab_test', 'test_A');
     }
 
-    /**
-     * @dataProvider getDataDeviceProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataDeviceProvider')]
     public function testDeviceProvider($hasDeviceProvider, $device, $expectedDevice)
     {
         $di = $this->createMock(DiInterface::class);

@@ -5,7 +5,7 @@
     "version": "3.0.1",
     "require-dev": {
         "phalcon/ide-stubs": "v5.5.0",
-        "phpunit/phpunit": "^10"
+        "phpunit/phpunit": "^11"
     },
     "license": "proprietary",
     "authors": [

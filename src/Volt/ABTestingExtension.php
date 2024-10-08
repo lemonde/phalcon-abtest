@@ -105,7 +105,7 @@ class ABTestingExtension
     {
         $counterLink = self::getTestClick($testName, $target, $winnerName);
         $attributes = 'href="' . htmlspecialchars($target, ENT_QUOTES) . '" ';
-        $attributes .= ' onmousedown="' . htmlspecialchars("this.href = '$counterLink'") . '" ';
+        $attributes .= ' onmousedown="' . htmlspecialchars("this.href = '$counterLink'", ENT_COMPAT) . '" ';
 
         return $attributes;
     }

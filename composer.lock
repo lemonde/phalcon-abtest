@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "45ebf9532354fdcade8638851e137fc0",
+    "content-hash": "974e66689066c479f640ce36bd6ee9da",
     "packages": [],
     "packages-dev": [
         {
@@ -197,16 +197,16 @@
         },
         {
             "name": "phalcon/ide-stubs",
-            "version": "v5.2.3",
+            "version": "v5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/ide-stubs.git",
-                "reference": "650f04e6c6d2a860b83350218fe6f1205cee3c76"
+                "reference": "6e3c59e3176af68ab2be7eb51a2c0d0c63718962"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/650f04e6c6d2a860b83350218fe6f1205cee3c76",
-                "reference": "650f04e6c6d2a860b83350218fe6f1205cee3c76",
+                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/6e3c59e3176af68ab2be7eb51a2c0d0c63718962",
+                "reference": "6e3c59e3176af68ab2be7eb51a2c0d0c63718962",
                 "shasum": ""
             },
             "require": {
@@ -260,7 +260,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-07-26T17:07:20+00:00"
+            "time": "2023-12-25T18:47:44+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -1823,7 +1823,7 @@
     "prefer-lowest": false,
     "platform": {
         "ext-redis": "*",
-        "php": "^8.0"
+        "php": "^8.1"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

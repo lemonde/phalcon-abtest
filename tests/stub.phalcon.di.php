@@ -111,7 +111,7 @@ class Di implements \Phalcon\Di\DiInterface
      * @param bool $shared
      * @return bool|ServiceInterface
      */
-    public function attempt(string $name, $definition, bool $shared = false)
+    public function attempt(string $name, $definition, bool $shared = false): \Phalcon\Di\ServiceInterface|bool
     {
     }
 
@@ -122,7 +122,7 @@ class Di implements \Phalcon\Di\DiInterface
      * @param mixed $parameters
      * @return mixed
      */
-    public function get(string $name, $parameters = null)
+    public function get(string $name, $parameters = null): mixed
     {
     }
 
@@ -151,7 +151,7 @@ class Di implements \Phalcon\Di\DiInterface
      * @param string $name
      * @return mixed
      */
-    public function getRaw(string $name)
+    public function getRaw(string $name): mixed
     {
     }
 
@@ -182,7 +182,7 @@ class Di implements \Phalcon\Di\DiInterface
      * @param mixed $parameters
      * @return mixed
      */
-    public function getShared(string $name, $parameters = null)
+    public function getShared(string $name, $parameters = null): mixed
     {
     }
 

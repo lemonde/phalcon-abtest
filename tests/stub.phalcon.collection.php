@@ -68,7 +68,7 @@ class Collection implements \ArrayAccess, \Phalcon\Support\Collection\Collection
      * @param string $element
      * @return mixed
      */
-    public function __get(string $element)
+    public function __get(string $element): mixed
     {
     }
 
@@ -130,7 +130,7 @@ class Collection implements \ArrayAccess, \Phalcon\Support\Collection\Collection
      * @param string $cast
      * @return mixed
      */
-    public function get(string $element, $defaultValue = null, string $cast = null)
+    public function get(string $element, $defaultValue = null, string $cast = null): mixed
     {
     }
 

@@ -199,7 +199,7 @@ class EngineTest extends TestCase
         $this->assertEquals($expectedDevice, $engine->getDevice());
     }
 
-    public function getDataDeviceProvider()
+    public static function getDataDeviceProvider()
     {
         return [
             [false, null, 'desktop'],
@@ -209,7 +209,7 @@ class EngineTest extends TestCase
         ];
     }
 
-    public function getUserAgent(): array
+    public static function getUserAgent(): array
     {
         return [
             'Desktop' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'],

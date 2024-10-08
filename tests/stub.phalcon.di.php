@@ -294,7 +294,7 @@ class Di implements \Phalcon\Di\DiInterface
      * @param mixed $name
      * @return mixed
      */
-    public function offsetGet($name)
+    public function offsetGet($name): mixed
     {
     }
 

@@ -293,5 +293,5 @@ composer install
 - Exécuter les tests
 
 ```bash
-./vendor/bin/phpunit --no-coverage --do-not-cache-result
+./vendor/bin/phpunit --no-coverage
 ```

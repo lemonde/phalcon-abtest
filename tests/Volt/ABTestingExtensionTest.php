@@ -286,7 +286,7 @@ class ABTestingExtensionTest extends TestCase
             ->expects($this->once())
             ->method('getTest')
             ->with('testName')
-            ->willReturn(new \Exception('Any exception thrown'));
+            ->willReturn(null);
         $engine
             ->expects($this->never())
             ->method('savePrint');

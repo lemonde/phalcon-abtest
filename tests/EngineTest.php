@@ -15,7 +15,7 @@ use ReflectionClass;
 
 class EngineTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         unset($_SERVER['HTTP_USER_AGENT']);
         $reflection = new ReflectionClass(Engine::class);

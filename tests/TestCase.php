@@ -8,7 +8,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 {
     private $mockedSingleton = [];
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->mockedSingleton as $singleton) {
             $this->resetSingleton($singleton[0], $singleton[1]);

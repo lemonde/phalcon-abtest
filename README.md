@@ -42,9 +42,8 @@ class Redis extends \Phalcon\Cache\Backend\Redis {
      * @param int $count
      * @return array
      */
-    public function hScan($key, $pattern = null, $count = 0)
+    public function hScan($key, &$iterator = null, $pattern = null, $count = 0)
     {
-        $iterator = null;
         $results = [];
         $this->_redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY);
     

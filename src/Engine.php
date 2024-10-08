@@ -21,20 +21,17 @@ use Phalcon\Events\ManagerInterface;
  */
 class Engine implements InjectionAwareInterface, EventsAwareInterface
 {
-    /**
-     * @var self
-     */
-    private static $instance;
+    private static ?Engine $instance;
 
     /**
      * @var null|DiInterface
      */
-    private $dependencyInjector;
+    private ?DiInterface $dependencyInjector;
 
     /**
      * @var null|ManagerInterface
      */
-    private $eventsManager;
+    private ?ManagerInterface $eventsManager;
 
     /**
      * @param DiInterface|null $di
@@ -51,22 +48,22 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
     /**
      * @var Test[]
      */
-    private $tests = [];
+    private array $tests = [];
 
     /**
      * @var AbTestCounter
      */
-    private $counter;
+    private AbTestCounter $counter;
 
     /**
      * @var string
      */
-    private $device;
+    private string $device;
 
     /**
      * @var bool
      */
-    private $activated = true;
+    private bool $activated = true;
 
     /**
      * Engine constructor.
@@ -118,7 +115,7 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
     /**
      * @param Test $test
      */
-    public function addTest(Test $test)
+    public function addTest(Test $test): void
     {
         $this->tests[$test->getIdentifier()] = $test;
     }
@@ -244,8 +241,6 @@ class Engine implements InjectionAwareInterface, EventsAwareInterface
 
     /**
      * Returns the internal dependency injector
-     *
-     * @return null|DiInterface
      */
     public function getDI(): DiInterface
     {

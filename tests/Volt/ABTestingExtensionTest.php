@@ -15,11 +15,7 @@ class ABTestingExtensionTest extends TestCase
 {
     public function testCompileFunction()
     {
-        $exportParams = function(array $params) {
-          return join(', ', array_map(function ($val) {
-              return var_export($val, true);
-          }, $params));
-        };
+        $exportParams = fn(array $params) => join(', ', array_map(fn($val) => var_export($val, true), $params));
         $ext = new ABTestingExtension();
         $this->assertEquals(
             ABTestingExtension::class . "::getTestResult('testName')",

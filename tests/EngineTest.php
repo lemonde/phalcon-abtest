@@ -20,9 +20,7 @@ class EngineTest extends TestCase
         unset($_SERVER['HTTP_USER_AGENT']);
         $reflection = new ReflectionClass(Engine::class);
         $instance = $reflection->getProperty('instance');
-        $instance->setAccessible(true); // now we can modify that :)
         $instance->setValue(null, null); // instance is gone
-        $instance->setAccessible(false); // clean up
     }
 
     /**
@@ -97,7 +95,7 @@ class EngineTest extends TestCase
      * @throws \ReflectionException
      */
     public function testSavePrintNoTest() {
-        list($engine, $counter) = $this->getEngine([]);
+        [$engine, $counter] = $this->getEngine([]);
 
         $eventsManager = $this->createMock(EventsManager::class);
 
@@ -111,7 +109,7 @@ class EngineTest extends TestCase
     }
 
     public function testSavePrint() {
-        list($engine, $counter) = $this->getEngine([
+        [$engine, $counter] = $this->getEngine([
             'phpunit_ab_test' => [
                 'variants' => [
                     'test_A' => 'test A',
@@ -134,7 +132,7 @@ class EngineTest extends TestCase
     }
 
     public function testSaveClickNoTest() {
-        list($engine, $counter) = $this->getEngine([]);
+        [$engine, $counter] = $this->getEngine([]);
 
         $eventsManager = $this->createMock(EventsManager::class);
 
@@ -148,7 +146,7 @@ class EngineTest extends TestCase
     }
 
     public function testSaveClick() {
-        list($engine, $counter) = $this->getEngine([
+        [$engine, $counter] = $this->getEngine([
             'phpunit_ab_test' => [
                 'variants' => [
                     'test_A' => 'test A',
@@ -254,16 +252,14 @@ class EngineTest extends TestCase
         return $di;
     }
 
-    public function getDeviceProvider($device = null): DeviceProviderInterface
+    public function getDeviceProvider(string $device): DeviceProviderInterface
     {
         return new class ($device) implements DeviceProviderInterface {
-            private $device;
-            public function __construct($device)
+            public function __construct(private string $device)
             {
-                $this->device = $device;
             }
 
-            public function getDevice()
+            public function getDevice(): string
             {
                 return $this->device;
             }

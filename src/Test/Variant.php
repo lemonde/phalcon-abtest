@@ -7,20 +7,11 @@ namespace ABTesting\Test;
  */
 class Variant
 {
-    /**
-     * @var mixed
-     */
-    private $value;
+    private mixed $value;
 
-    /**
-     * @var string
-     */
-    private $identifier;
+    private string $identifier;
 
-    /**
-     * @var bool
-     */
-    private $default;
+    private bool $default;
 
     /**
      * Variant constructor.
@@ -28,7 +19,7 @@ class Variant
      * @param mixed $value
      * @param bool $default
      */
-    public function __construct(string $identifier, $value, bool $default = false)
+    public function __construct(string $identifier, mixed $value, bool $default = false)
     {
         $this->identifier = $identifier;
         $this->value = $value;
@@ -38,7 +29,7 @@ class Variant
     /**
      * @return mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }

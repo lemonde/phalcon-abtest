@@ -7,5 +7,5 @@ interface DeviceProviderInterface
     /**
      * @return string  desktop|tablet|mobile
      */
-    public function getDevice();
+    public function getDevice(): string;
 }

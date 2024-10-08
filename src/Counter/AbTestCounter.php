@@ -13,7 +13,7 @@ use Phalcon\Di\Injectable;
  */
 class AbTestCounter extends Injectable
 {
-    private $alreadyTested = [];
+    private array $alreadyTested = [];
 
     public function saveCounter(string $type, string $device, string $testName, string $template): void
     {

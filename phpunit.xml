@@ -7,7 +7,7 @@
     </report>
   </coverage>
   <testsuites>
-    <testsuite name="Phalon AB Test - Suite">
+    <testsuite name="Phalcon AB Test - Suite">
       <directory suffix="Test.php">./tests/</directory>
     </testsuite>
   </testsuites>

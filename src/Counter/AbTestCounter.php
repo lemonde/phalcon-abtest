@@ -13,7 +13,7 @@ use Phalcon\Di\Injectable;
  */
 class AbTestCounter extends Injectable
 {
-    private $alreadyTested = [];
+    private array $alreadyTested = [];
 
     public function saveCounter(string $type, string $device, string $testName, string $template): void
     {
@@ -26,6 +26,7 @@ class AbTestCounter extends Injectable
 
     public function getCount(string $testName, string $restriction): array
     {
-        return $this->cache->hScan($testName, $restriction);
+        $iterator = null;
+        return $this->cache->hScan($testName, $iterator, $restriction);
     }
 }

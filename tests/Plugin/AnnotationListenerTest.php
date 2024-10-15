@@ -50,11 +50,9 @@ class AnnotationListenerTest extends TestCase
         $listener->beforeDispatch($event, $dispatcher);
     }
 
-    /**
-     * @expectedException \ABTesting\Exception\AbTestingException
-     */
     public function testBeforeDispatchIncompleteAnnotation()
     {
+        $this->expectException(\ABTesting\Exception\AbTestingException::class);
         $event = $this->createMock(Event::class);
 
         $dispatcher = $this->createMock(Dispatcher::class);

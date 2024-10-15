@@ -42,9 +42,8 @@ class Redis extends \Phalcon\Cache\Backend\Redis {
      * @param int $count
      * @return array
      */
-    public function hScan($key, $pattern = null, $count = 0)
+    public function hScan($key, &$iterator = null, $pattern = null, $count = 0)
     {
-        $iterator = null;
         $results = [];
         $this->_redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY);
     
@@ -111,6 +110,48 @@ Versions :
       # et un autre nommé winner
       $router->add('/_my_ab_redirection/{testName:[a-zA-Z0-9\_]+}/{winner:[a-zA-Z0-9\_]+}', ['controller' => 'ab_test', 'action' => 'count', 'namespace' => 'ABTesting\Controller'])->setName('ab_test_redirect');
       ```
+   4. Spécifier le device du client, deux méthodes :
+      
+      - en le faisant manuellement depuis le contrôleur
+      ```php
+      public function beforeExecuteRoute(Dispatcher $dispatcher)
+      {
+          ABTestEngine::getInstance()->setDevice('desktop');
+      }
+      ```
+      
+      - ou via un service nommé `phalcon-abtest.device_provider` qui implémente l'interface [DeviceProviderInterface.php](src/DeviceProvider/DeviceProviderInterface.php)
+
+      ```php
+      $di->setShared('phalcon-abtest.device_provider', function () {
+          return new class () extends ABTesting\DeviceProvider\DeviceProviderInterface {
+              public function getDevice()
+              {
+                  return 'desktop';
+              }
+          } 
+      });
+      ```
+      
+      Vous pouvez utiliser mobiledetect/mobiledetectlib via le service device_provider:
+      ```php
+      $di->setShared('phalcon-abtest.device_provider', function () {
+          return new class () extends ABTesting\DeviceProvider\DeviceProviderInterface {
+              public function getDevice()
+              {
+                  $detect = new MobileDetect();
+
+                  if ($detect->isTablet()) {
+                      return 'tablet';
+                  } elseif ($detect->isMobile()) {
+                      return 'mobile'
+                  }
+                  
+                  return 'desktop';
+              }
+          } 
+      });
+      ```
       
     4. **(Optionnel)** Ajouter le reporting au routing:
        
@@ -118,14 +159,11 @@ Versions :
           $router->add('/_my_ab_dashboard', ['controller' => 'ab_test', 'action' => 'report', 'namespace' => 'ABTesting\Controller'])->setName('ab_test_report');
           ```
       
-3. Ajouter la configuration des tests A/B (via un service nommé `config` utilisant `\Phalcon\Config`)
+3. Ajouter un service nommé `phalcon-abtest.tests` (utilisant `\Phalcon\Config`) renvoyant la configuration des tests A/B 
 
     ```php
-    $config = new Phalcon\Config([
-        
-        // ...
-        
-        'ab_test' => [
+    $di->setShared('phalcon-abtest.tests', function () {
+        return new Phalcon\Config([
             'home_text_content' => [
                 'default' => 'home_test_A',
                 'variants' => [
@@ -150,9 +188,8 @@ Versions :
                 ],
                 'chooser' => [\ABTesting\Chooser\PercentChooser::class]
             ],
-        ],
-    
-    ]);
+        ]);
+    });
     ```
    
     Plus d'info [ici](#configuration-des-tests-ab)
@@ -232,3 +269,28 @@ Pour configurer vos tests A/B, tout se fait dans une conf en tableau sous la for
   - `abtest:afterBattle`: après le calcul d'un test
   - `abtest:beforePrint`: avant l'affichage du résultat via volt
   - `abtest:beforeClick`: avant la redirection via le lien du test
+
+
+# Exécuter les tests en local
+
+- Build l'image de test en local
+```bash
+docker build --no-cache -t phalcon-abtest .
+```
+
+- Lancer le conteneur et ouvrir une session bash
+```bash
+docker run --rm -it -v "$PWD":/app phalcon-abtest 
+```
+
+- installer les packages PHP
+
+```bash
+composer install
+```
+
+- Exécuter les tests
+
+```bash
+./vendor/bin/phpunit --no-coverage
+```

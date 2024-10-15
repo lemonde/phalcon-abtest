@@ -16,6 +16,7 @@ use IteratorAggregate;
 use InvalidArgumentException;
 use JsonSerializable;
 use Phalcon\Support\Collection\CollectionInterface;
+use ReturnTypeWillChange;
 use Serializable;
 use Traversable;
 
@@ -68,7 +69,7 @@ class Collection implements \ArrayAccess, \Phalcon\Support\Collection\Collection
      * @param string $element
      * @return mixed
      */
-    public function __get(string $element)
+    public function __get(string $element): mixed
     {
     }
 
@@ -130,7 +131,7 @@ class Collection implements \ArrayAccess, \Phalcon\Support\Collection\Collection
      * @param string $cast
      * @return mixed
      */
-    public function get(string $element, $defaultValue = null, string $cast = null)
+    public function get(string $element, $defaultValue = null, string $cast = null): mixed
     {
     }
 
@@ -210,7 +211,7 @@ class Collection implements \ArrayAccess, \Phalcon\Support\Collection\Collection
      * @param mixed $element
      * @return mixed
      */
-    public function offsetGet($element)
+    public function offsetGet($element): mixed
     {
     }
 

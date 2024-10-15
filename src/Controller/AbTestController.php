@@ -67,9 +67,9 @@ class AbTestController extends Controller
         $view->setViewsDir(dirname(__DIR__) . '/Views/');
         $view->registerEngines(['.volt' => Volt::class]);
 
-        $type = $this->request->hasQuery('type') ? strtolower($this->request->getQuery('type')) : 'total';
-        $deviceFilter = $this->request->hasQuery('device') ? strtolower($this->request->getQuery('device')) : '*';
-        $testName = $this->request->hasQuery('test') ? strtolower($this->request->getQuery('test')) : null;
+        $type = $this->request->hasQuery('type') ? strtolower((string) $this->request->getQuery('type')) : 'total';
+        $deviceFilter = $this->request->hasQuery('device') ? strtolower((string) $this->request->getQuery('device')) : '*';
+        $testName = $this->request->hasQuery('test') ? strtolower((string) $this->request->getQuery('test')) : null;
         $range = max(min($this->request->hasQuery('range') ? intval($this->request->getQuery('range')) : 1, 1000), 1);
         $names = [];
 
@@ -161,7 +161,7 @@ class AbTestController extends Controller
                         ]) - 1;
 
                     foreach ($engine->getCounter()->getCount($testName, $restriction) as $identifier => $count) {
-                        list(, , $device, $countType) = explode(':', $identifier);
+                        [, , $device, $countType] = explode(':', $identifier);
 
                         if ($countType === 'print') {
                             $data[$key]['impression'] += $count;

@@ -28,8 +28,12 @@ class AbTestControllerTest extends TestCase
         $controller->dispatcher
             ->expects($this->exactly(2))
             ->method('getParam')
-            ->withConsecutive(['testName'], ['winner'])
-            ->willReturnOnConsecutiveCalls('test', 'winner');
+            ->willReturnCallback(fn ($param) => match ($param) {
+                'testName' => 'test',
+                'winner' => 'winner',
+                default => throw new Exception('Invalid call getParam("' . ((string) $param) . '")')
+            })
+        ;
 
         $controller->request = $this->createMock(Request::class);
         $controller->request
@@ -72,8 +76,12 @@ class AbTestControllerTest extends TestCase
         $controller->dispatcher
             ->expects($this->exactly(2))
             ->method('getParam')
-            ->withConsecutive(['testName'], ['winner'])
-            ->willReturnOnConsecutiveCalls('invalid', 'winner');
+            ->willReturnCallback(fn ($param) => match ($param) {
+                'testName' => 'invalid',
+                'winner' => 'winner',
+                default => throw new Exception('Invalid call getParam("' . ((string) $param) . '")')
+            })
+        ;
         $controller->request = $this->createMock(Request::class);
         $controller->request
             ->expects($this->once())
@@ -111,8 +119,12 @@ class AbTestControllerTest extends TestCase
         $controller->dispatcher
             ->expects($this->never())
             ->method('getParam')
-            ->withConsecutive(['testName'], ['winner'])
-            ->willReturnOnConsecutiveCalls('invalid', 'winner');
+            ->willReturnCallback(fn ($param) => match ($param) {
+                'testName' => 'invalid',
+                'winner' => 'winner',
+                default => throw new Exception('Invalid call getParam("' . ((string) $param) . '")')
+            })
+        ;
         $controller->request = $this->createMock(Request::class);
         $controller->request
             ->expects($this->once())
@@ -150,8 +162,12 @@ class AbTestControllerTest extends TestCase
         $controller->dispatcher
             ->expects($this->exactly(2))
             ->method('getParam')
-            ->withConsecutive(['testName'], ['winner'])
-            ->willReturnOnConsecutiveCalls('test', 'invalid');
+            ->willReturnCallback(fn ($param) => match ($param) {
+                'testName' => 'test',
+                'winner' => 'invalid',
+                default => throw new Exception('Invalid call getParam("' . ((string) $param) . '")')
+            })
+        ;
         $controller->request = $this->createMock(Request::class);
         $controller->request
             ->expects($this->once())
@@ -194,8 +210,12 @@ class AbTestControllerTest extends TestCase
         $controller->dispatcher
             ->expects($this->exactly(2))
             ->method('getParam')
-            ->withConsecutive(['testName'], ['winner'])
-            ->willReturnOnConsecutiveCalls('test', 'invalid');
+            ->willReturnCallback(fn ($param) => match ($param) {
+                'testName' => 'test',
+                'winner' => 'invalid',
+                default => throw new Exception('Invalid call getParam("' . ((string) $param) . '")')
+            })
+        ;
         $controller->request = $this->createMock(Request::class);
         $controller->request
             ->expects($this->once())

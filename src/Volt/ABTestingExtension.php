@@ -8,18 +8,14 @@ use Phalcon\Di\Di;
 
 class ABTestingExtension
 {
-    public function compileFunction($name, $arguments): ?string
+    public function compileFunction(string $name, string $arguments): ?string
     {
-        switch ($name) {
-            case 'ab_test_result':
-                return self::class . '::getTestResult(' . $arguments . ')';
-            case 'ab_test_click':
-                return self::class . '::getTestClick(' . $arguments . ')';
-            case 'ab_test_href':
-                return self::class . '::getTestHref(' . $arguments . ')';
-        }
-
-        return null;
+        return match ($name) {
+            'ab_test_result' => self::class . '::getTestResult(' . $arguments . ')',
+            'ab_test_click' => self::class . '::getTestClick(' . $arguments . ')',
+            'ab_test_href' => self::class . '::getTestHref(' . $arguments . ')',
+            default => null,
+        };
     }
 
     public static function getTestResult(string $testName): ?string
@@ -48,7 +44,7 @@ class ABTestingExtension
         }
     }
 
-    public static function getTestClick(string $testName, string $target, $winnerName = null): ?string
+    public static function getTestClick(string $testName, string $target, ?string $winnerName = null): ?string
     {
         $engine  = Engine::getInstance();
 
@@ -101,11 +97,11 @@ class ABTestingExtension
         }
     }
 
-    public static function getTestHref(string $testName, string $target, $winnerName = null): string
+    public static function getTestHref(string $testName, string $target, ?string $winnerName = null): string
     {
         $counterLink = self::getTestClick($testName, $target, $winnerName);
         $attributes = 'href="' . htmlspecialchars($target, ENT_QUOTES) . '" ';
-        $attributes .= ' onmousedown="' . htmlspecialchars("this.href = '$counterLink'") . '" ';
+        $attributes .= ' onmousedown="' . htmlspecialchars("this.href = '$counterLink'", ENT_COMPAT) . '" ';
 
         return $attributes;
     }

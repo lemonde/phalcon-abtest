@@ -9,7 +9,7 @@ class PercentChooser implements ChooserInterface
 {
     public const DEFAULT_PERCENT = 50;
 
-    private $floor;
+    private int $floor;
 
     /**
      * PercentChooser constructor.

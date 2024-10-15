@@ -4,6 +4,7 @@ namespace ABTesting\Tests;
 
 use ABTesting\Chooser\PercentChooser;
 use ABTesting\Counter\AbTestCounter;
+use ABTesting\DeviceProvider\DeviceProviderInterface;
 use ABTesting\Engine;
 use ABTesting\Test\Test;
 use Phalcon\Config\Config;
@@ -14,23 +15,21 @@ use ReflectionClass;
 
 class EngineTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         unset($_SERVER['HTTP_USER_AGENT']);
         $reflection = new ReflectionClass(Engine::class);
         $instance = $reflection->getProperty('instance');
-        $instance->setAccessible(true); // now we can modify that :)
         $instance->setValue(null, null); // instance is gone
-        $instance->setAccessible(false); // clean up
     }
 
     /**
-     * @dataProvider getUserAgent
      *
      * @param string $userAgent
      *
      * @return \ABTesting\Engine
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getUserAgent')]
     public function testGetInstance(string $userAgent) {
         $_SERVER['HTTP_USER_AGENT'] = $userAgent;
 
@@ -96,7 +95,7 @@ class EngineTest extends TestCase
      * @throws \ReflectionException
      */
     public function testSavePrintNoTest() {
-        list($engine, $counter) = $this->getEngine([]);
+        [$engine, $counter] = $this->getEngine([]);
 
         $eventsManager = $this->createMock(EventsManager::class);
 
@@ -110,7 +109,7 @@ class EngineTest extends TestCase
     }
 
     public function testSavePrint() {
-        list($engine, $counter) = $this->getEngine([
+        [$engine, $counter] = $this->getEngine([
             'phpunit_ab_test' => [
                 'variants' => [
                     'test_A' => 'test A',
@@ -133,7 +132,7 @@ class EngineTest extends TestCase
     }
 
     public function testSaveClickNoTest() {
-        list($engine, $counter) = $this->getEngine([]);
+        [$engine, $counter] = $this->getEngine([]);
 
         $eventsManager = $this->createMock(EventsManager::class);
 
@@ -147,7 +146,7 @@ class EngineTest extends TestCase
     }
 
     public function testSaveClick() {
-        list($engine, $counter) = $this->getEngine([
+        [$engine, $counter] = $this->getEngine([
             'phpunit_ab_test' => [
                 'variants' => [
                     'test_A' => 'test A',
@@ -169,7 +168,44 @@ class EngineTest extends TestCase
         $engine->saveClick('phpunit_ab_test', 'test_A');
     }
 
-    public function getUserAgent(): array
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataDeviceProvider')]
+    public function testDeviceProvider($hasDeviceProvider, $device, $expectedDevice)
+    {
+        $di = $this->createMock(DiInterface::class);
+
+        $di
+            ->expects($this->any())
+            ->method('has')
+            ->with('phalcon-abtest.device_provider')
+            ->willReturn($hasDeviceProvider);
+
+        $di->expects($this->any())
+            ->method('get')
+            ->willReturnCallback(function ($name) use ($hasDeviceProvider, $device) {
+                if ($name === 'phalcon-abtest.tests') {
+                    return $this->createMock(Config::class);
+                } elseif ($name === 'phalcon-abtest.device_provider' && $hasDeviceProvider) {
+                    return $this->getDeviceProvider($device);
+                }
+
+                throw new \LogicException('Invalid call di->get("' . $name . '")');
+            });
+
+        $engine = Engine::getInstance($di);
+        $this->assertEquals($expectedDevice, $engine->getDevice());
+    }
+
+    public static function getDataDeviceProvider()
+    {
+        return [
+            [false, null, 'desktop'],
+            [true, 'mobile', 'mobile'],
+            [true, 'tablet', 'tablet'],
+            [true, 'desktop', 'desktop'],
+        ];
+    }
+
+    public static function getUserAgent(): array
     {
         return [
             'Desktop' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'],
@@ -200,17 +236,11 @@ class EngineTest extends TestCase
     public function getDi(array $tests = [])
     {
         $di = $this->createMock(DiInterface::class);
-        $config = $this->createMock(Config::class);
         $abTestConfig = $this->createMock(Config::class);
         $di
             ->expects($this->any())
             ->method('get')
-            ->with('config')
-            ->willReturn($config);
-        $config
-            ->expects($this->any())
-            ->method('get')
-            ->with('ab_test', $this->isInstanceOf(Config::class))
+            ->with('phalcon-abtest.tests')
             ->willReturn($abTestConfig);
         $abTestConfig
             ->expects($this->any())
@@ -220,5 +250,19 @@ class EngineTest extends TestCase
             });
 
         return $di;
+    }
+
+    public function getDeviceProvider(string $device): DeviceProviderInterface
+    {
+        return new class ($device) implements DeviceProviderInterface {
+            public function __construct(private string $device)
+            {
+            }
+
+            public function getDevice(): string
+            {
+                return $this->device;
+            }
+        };
     }
 }

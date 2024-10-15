@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 4.0.0 (breaking change)
+- get user device from service named `phalcon-abtest.device_provider` (breaking change)
+- get tests config from service named `phalcon-abtest.tests` (breaking change)
+- remove mobiledetect/mobiledetectlib package
+- bump phpunit/phpunit to 11
+- minimal PHP 8.2
+- fix Redis hscan call to match real signature
+
 ## 3.0.1
 - bump mobiledetect
 

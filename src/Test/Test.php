@@ -10,42 +10,27 @@ use ABTesting\Engine;
  */
 class Test
 {
-    /**
-     * @var string
-     */
-    private $identifier;
+    private string $identifier;
 
     /**
      * @var Variant[]
      */
-    private $variants = [];
+    private array $variants = [];
 
-    /**
-     * @var Variant
-     */
-    private $defaultVariant;
+    private ?Variant $defaultVariant = null;
 
-    /**
-     * @var ChooserInterface
-     */
-    private $chooser;
+    private ChooserInterface $chooser;
 
-    /**
-     * @var Variant|null
-     */
-    private $winner;
+    private ?Variant $winner = null;
 
-    /**
-     * @var bool
-     */
-    private $hasBattled = false;
+    private bool $hasBattled = false;
 
     /**
      * Test constructor.
      *
-     * @param string                       $identifier
-     * @param Variant[]                    $variants
-     * @param \ABTesting\Test\Variant|null $defaultVariant
+     * @param string       $identifier
+     * @param Variant[]    $variants
+     * @param Variant|null $defaultVariant
      */
     public function __construct(string $identifier, array $variants = [], Variant $defaultVariant = null)
     {
@@ -95,7 +80,7 @@ class Test
     /**
      * @return null|Variant
      */
-    public function getVariant($identifier): ?Variant
+    public function getVariant(string $identifier): ?Variant
     {
         foreach ($this->variants as $variant) {
             if ($variant->getIdentifier() === $identifier) {
@@ -125,7 +110,7 @@ class Test
     /**
      * @param Variant $variant
      */
-    public function addVariant(Variant $variant)
+    public function addVariant(Variant $variant): void
     {
         $this->variants[] = $variant;
 
@@ -137,7 +122,7 @@ class Test
     /**
      * @param string $identifier
      */
-    public function removeVariant(string $identifier)
+    public function removeVariant(string $identifier): void
     {
         foreach ($this->variants as $key => $variant) {
             if ($variant->getIdentifier() === $identifier) {
@@ -150,7 +135,7 @@ class Test
         }
     }
 
-    public function battle()
+    public function battle(): void
     {
         if (null !== Engine::getInstance()->getEventsManager()) {
             Engine::getInstance()->getEventsManager()->fire('abtest:beforeBattle', $this);

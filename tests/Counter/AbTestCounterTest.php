@@ -60,7 +60,7 @@ class AbTestCounterTest extends TestCase
         $counter->cache
             ->expects($this->once())
             ->method('hScan')
-            ->with($testName, $restriction)
+            ->with($testName, null, $restriction)
             ->willReturn([]);
 
 

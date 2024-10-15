@@ -10,20 +10,18 @@ use Phalcon\Mvc\Dispatcher;
 
 class AnnotationListener extends Injectable
 {
-    /**
-     * @var bool
-     */
-    private $isTesting = false;
+    private bool $isTesting = false;
     /**
      * @var string[]
      */
-    private $tests = [];
+    private array $tests = [];
+
     /**
      * @param Event $event
      * @param Dispatcher $dispatcher
      * @throws AbTestingException
      */
-    public function beforeDispatch(Event $event, Dispatcher $dispatcher)
+    public function beforeDispatch(Event $event, Dispatcher $dispatcher): void
     {
         $this->checkIsTesting($dispatcher->getControllerClass(), $dispatcher->getActiveMethod());
 
@@ -33,12 +31,13 @@ class AnnotationListener extends Injectable
             Engine::getInstance()->deactivate();
         }
     }
+
     /**
      * @param string $controllerClass
      * @param string $controllerMethod
      * @throws AbTestingException
      */
-    private function checkIsTesting(string $controllerClass, string $controllerMethod)
+    private function checkIsTesting(string $controllerClass, string $controllerMethod): void
     {
         $actionAnnotations = $this->annotations->getMethod($controllerClass, $controllerMethod);
 
@@ -58,7 +57,7 @@ class AnnotationListener extends Injectable
         }
     }
 
-    private function calculate()
+    private function calculate(): void
     {
         $engine = Engine::getInstance();
 

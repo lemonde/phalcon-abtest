@@ -4,7 +4,7 @@
     "type": "library",
     "version": "4.0.0",
     "require-dev": {
-        "phalcon/ide-stubs": "v5.5.0",
+        "phalcon/ide-stubs": "v5.9",
         "phpunit/phpunit": "^11"
     },
     "license": "proprietary",
@@ -26,6 +26,6 @@
     },
     "require": {
         "ext-redis": "*",
-        "php": "^8.2"
+        "php": "^8.4"
     }
 }

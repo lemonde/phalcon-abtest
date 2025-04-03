@@ -7,7 +7,7 @@ use ABTesting\Test\Variant;
 
 class PercentChooser implements ChooserInterface
 {
-    public const DEFAULT_PERCENT = 50;
+    public const int DEFAULT_PERCENT = 50;
 
     private int $floor;
 

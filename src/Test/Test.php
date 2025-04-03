@@ -32,7 +32,7 @@ class Test
      * @param Variant[]    $variants
      * @param Variant|null $defaultVariant
      */
-    public function __construct(string $identifier, array $variants = [], Variant $defaultVariant = null)
+    public function __construct(string $identifier, array $variants = [], ?Variant $defaultVariant = null)
     {
         $this->identifier = $identifier;
 

@@ -15,7 +15,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function createMockForSingleton(string $className, string $singletonProperty = 'instance', array $methods = null)
+    public function createMockForSingleton(string $className, string $singletonProperty = 'instance', ?array $methods = null)
     {
         if (null !== $methods) {
             $mock = $this->createPartialMock($className, $methods);

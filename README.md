@@ -70,6 +70,8 @@ Versions :
 - 1.X : Phalcon 3
 - 2.X : Phalcon 4
 - 3.X : Phalcon 5
+- 4.X : Phalcon 5 and PHP 8.2
+- 4.1 : Phalcon 5.9 and PHP 8.4
 
 1. Ajouter la dépendance
 

@@ -2,7 +2,7 @@
   "app_name": "Phalcon AB Test",
   "branch" : "master",
   "repo_url": "https://github.com/lemonde/phalcon-abtest",
-  "version_name" : "4.0.0",
+  "version_name" : "4.1.0",
   "template": ".github/changelog-template.md",
   "file": "CHANGELOG.md",
   "sections": [

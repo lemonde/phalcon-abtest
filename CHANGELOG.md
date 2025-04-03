@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 4.1.0
+- minimal PHP 8.4 and Phalcon 5.9
+- bump phpunit/phpunit to 12
+- bump phalcon/ide-stubs to v5.9
+- fix some deprecated from PHP 8.4
+- use Dockerfile in Travis
+
 ## 4.0.0 (breaking change)
 - get user device from service named `phalcon-abtest.device_provider` (breaking change)
 - get tests config from service named `phalcon-abtest.tests` (breaking change)

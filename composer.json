@@ -2,7 +2,7 @@
     "name": "lemonde/phalcon-abtest",
     "description": "An AB testing library for Phalcon applications",
     "type": "library",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "require-dev": {
         "phalcon/ide-stubs": "v5.9",
         "phpunit/phpunit": "^12"

@@ -1,8 +1,7 @@
-language: php
-dist: jammy
-php:
-  - '8.4'
+language: minimal
+dist: noble
 
-before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-install: composer install
-script: $TRAVIS_BUILD_DIR/vendor/bin/phpunit --no-coverage
+before_install:
+  - docker build --no-cache -t phalcon-abtest .
+  - docker run --rm -v $(pwd):/app phalcon-abtest bash -c "composer install"
+script: docker run --rm -v $(pwd):/app phalcon-abtest bash -c "vendor/bin/phpunit --no-coverage"
